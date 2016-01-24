@@ -1,19 +1,26 @@
 package skygrid8;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.block.BlockChest;
+import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.IProgressUpdate;
+import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.common.ChestGenHooks;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import skygrid8.core.SG_Settings;
 
 public class ChunkProviderGrid implements IChunkProvider
@@ -39,7 +46,9 @@ public class ChunkProviderGrid implements IChunkProvider
 	public Chunk provideChunk(int x, int z)
 	{
         ChunkPrimer chunkprimer = new ChunkPrimer();
-
+        
+        ArrayList<TileEntityChest> pendingChests = new ArrayList<TileEntityChest>();
+        
         for (int i = 0; i < 256 && i < SG_Settings.height; i += SG_Settings.dist)
         {
             for (int j = 0; j < 16; ++j)
@@ -54,12 +63,35 @@ public class ChunkProviderGrid implements IChunkProvider
                 	} else
                 	{
                 		chunkprimer.setBlockState(j, i, k, iblockstate);
+                		
+                		if(i < 255 && iblockstate.getBlock() instanceof BlockFarmland)
+                		{
+                			IBlockState crop = SG_Settings.fBlockList.size() <= 0? null : SG_Settings.fBlockList.get(random.nextInt(SG_Settings.fBlockList.size()));
+                			
+                			if(crop != null)
+                			{
+                				chunkprimer.setBlockState(j, i + 1, k, crop);
+                			}
+                		} else if(iblockstate.getBlock().getClass() == BlockChest.class)
+                		{
+                			TileEntityChest cTile = new TileEntityChest();
+                			WeightedRandomChestContent.generateChestContents(random, ChestGenHooks.getItems(lootChests.get(random.nextInt(lootChests.size())), random), cTile, 8);
+                			cTile.setWorldObj(worldObj); // Must be done after contents are set
+                			cTile.setPos(new BlockPos(j, i, k));
+                			pendingChests.add(cTile);
+                		}
                 	}
                 }
             }
         }
 
         Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
+        
+        for(TileEntityChest ct : pendingChests)
+        {
+        	chunk.addTileEntity(ct);
+        }
+        
         BiomeGenBase[] abiomegenbase = this.worldObj.getWorldChunkManager().loadBlockGeneratorData((BiomeGenBase[])null, x * 16, z * 16, 16, 16);
         byte[] abyte = chunk.getBiomeArray();
 
@@ -81,6 +113,11 @@ public class ChunkProviderGrid implements IChunkProvider
 	@Override
 	public void populate(IChunkProvider p_73153_1_, int p_73153_2_, int p_73153_3_)
 	{
+		if(!SG_Settings.populate)
+		{
+			return;
+		}
+		
         int i = p_73153_2_ * 16;
         int j = p_73153_3_ * 16;
         BlockPos blockpos = new BlockPos(i, 0, j);
@@ -148,4 +185,16 @@ public class ChunkProviderGrid implements IChunkProvider
 	{
 	}
 	
+	static ArrayList<String> lootChests = new ArrayList<String>();
+	
+	static
+	{
+		HashMap<String, ChestGenHooks> lootMap = ObfuscationReflectionHelper.getPrivateValue(ChestGenHooks.class, null, "chestInfo");
+		lootChests.addAll(lootMap.keySet());
+		
+		if(lootChests.size() <= 0)
+		{
+			lootChests.add(ChestGenHooks.DUNGEON_CHEST);
+		}
+	}
 }

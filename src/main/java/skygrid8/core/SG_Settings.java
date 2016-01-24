@@ -2,8 +2,11 @@ package skygrid8.core;
 
 import java.util.ArrayList;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockDynamicLiquid;
+import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
+import net.minecraftforge.common.IPlantable;
 
 
 /**
@@ -11,27 +14,41 @@ import net.minecraft.block.state.IBlockState;
  */
 public class SG_Settings
 {
+	public static boolean populate = false;
 	public static int height = 128;
 	public static int dist = 4;
 	public static ArrayList<IBlockState> oBlockList = new ArrayList<IBlockState>();
 	public static ArrayList<IBlockState> nBlockList = new ArrayList<IBlockState>();
-	public static String[] defSubList;
+	public static ArrayList<IBlockState> fBlockList = new ArrayList<IBlockState>();
+	public static String[] defBlockList;
+	public static String[] defFarmList;
 	
 	static
 	{
-		ArrayList<String> tmp = new ArrayList<String>();
+		ArrayList<String> tmp1 = new ArrayList<String>();
+		ArrayList<String> tmp2 = new ArrayList<String>();
 		
 		for(Block b : Block.blockRegistry)
 		{
-			if(b instanceof BlockDynamicLiquid || !b.isFullCube())
+			String s = Block.blockRegistry.getNameForObject(b).toString();
+			
+			if(b instanceof IPlantable)
+			{
+				tmp2.add(s);
+				continue;
+			} else if(b instanceof BlockFarmland || b.getClass() == BlockChest.class)
+			{
+				tmp1.add(s);
+				continue;
+			} else if(b instanceof BlockDynamicLiquid || !b.isFullCube())
 			{
 				continue;
 			}
 			
-			String s = Block.blockRegistry.getNameForObject(b).toString();
-			tmp.add(s);
+			tmp1.add(s);
 		}
 		
-		defSubList = tmp.toArray(new String[0]);
+		defBlockList = tmp1.toArray(new String[0]);
+		defFarmList = tmp2.toArray(new String[0]);
 	}
 }

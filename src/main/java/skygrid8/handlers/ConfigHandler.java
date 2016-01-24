@@ -24,7 +24,8 @@ public class ConfigHandler
 		
 		SG_Settings.height = config.getInt("Grid Height", Configuration.CATEGORY_GENERAL, 128, 1, 255, "How high should the grid of blocks be");
 		SG_Settings.dist = config.getInt("Grid Spacing", Configuration.CATEGORY_GENERAL, 3, 0, 15, "How much open space should there be between blocks") + 1;
-		String[] tmp = config.getStringList("Overworld Grid Blocks", "Overworld", SG_Settings.defSubList, "Which blocks should be present in the grid");
+		SG_Settings.populate = config.getBoolean("Natural Populate", Configuration.CATEGORY_GENERAL, false, "Naturally populate the grid with trees and plants");
+		String[] tmp = config.getStringList("Overworld Grid Blocks", Configuration.CATEGORY_GENERAL, SG_Settings.defBlockList, "Which blocks should be present in the grid");
 		
 		SG_Settings.oBlockList = new ArrayList<IBlockState>();
 		
@@ -38,7 +39,7 @@ public class ConfigHandler
 			}
 		}
 		
-		tmp = config.getStringList("Nether Grid Blocks", "Overworld", SG_Settings.defSubList, "Which blocks should be present in the grid");
+		tmp = config.getStringList("Nether Grid Blocks", Configuration.CATEGORY_GENERAL, SG_Settings.defBlockList, "Which blocks should be present in the grid");
 		
 		SG_Settings.nBlockList = new ArrayList<IBlockState>();
 		
@@ -49,6 +50,20 @@ public class ConfigHandler
 			if(b != null)
 			{
 				SG_Settings.nBlockList.add(b.getDefaultState());
+			}
+		}
+		
+		tmp = config.getStringList("Crops", Configuration.CATEGORY_GENERAL, SG_Settings.defFarmList, "Which blocks should be present in the grid");
+		
+		SG_Settings.fBlockList = new ArrayList<IBlockState>();
+		
+		for(String s : tmp)
+		{
+			Block b = Block.getBlockFromName(s);
+			
+			if(b != null)
+			{
+				SG_Settings.fBlockList.add(b.getDefaultState());
 			}
 		}
 		
