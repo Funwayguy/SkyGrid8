@@ -1,0 +1,16 @@
+[
+{
+  "modid": "skygrid8",
+  "name": "Sky Grid 8",
+  "description": "A sky grid mod specifically for Minecraft 1.8.x",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Funwayguy","Darkosto"],
+  "credits": "",
+  "logoFile": "title.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
