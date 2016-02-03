@@ -25,7 +25,7 @@ public class WorldProviderOverworldGrid extends WorldProvider
      */
     public IChunkProvider createChunkGenerator()
     {
-    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), GridRegistry.blockOverworld);
+    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), GridRegistry.blocksOverworld);
     }
     
     /**

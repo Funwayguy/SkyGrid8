@@ -35,7 +35,7 @@ public class ConfigHandler
 		{
 			String[] tmp = config.getStringList("Overworld Grid Blocks", Configuration.CATEGORY_GENERAL, new String[0], "Which blocks should be present in the grid");
 			
-			GridRegistry.blockOverworld = new ArrayList<GridBlock>();
+			GridRegistry.blocksOverworld = new ArrayList<GridBlock>();
 			
 			for(String s : tmp)
 			{
@@ -43,7 +43,7 @@ public class ConfigHandler
 				
 				if(b != null)
 				{
-					GridRegistry.blockOverworld.add(new GridBlock(b));
+					GridRegistry.blocksOverworld.add(new GridBlock(b));
 				}
 			}
 			

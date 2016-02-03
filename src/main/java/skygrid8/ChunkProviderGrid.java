@@ -45,9 +45,14 @@ public class ChunkProviderGrid implements IChunkProvider
 	{
         ChunkPrimer chunkprimer = new ChunkPrimer();
         
-        int spaceX = Math.max(2, random.nextInt(Math.max(1, SG_Settings.dist)));
-        int spaceY = Math.max(2, random.nextInt(Math.max(1, SG_Settings.dist)));
-        int spaceZ = Math.max(2, random.nextInt(Math.max(1, SG_Settings.dist)));
+        int spaceX = random.nextInt(Math.max(1, SG_Settings.dist + 1));
+        int spaceY = random.nextInt(Math.max(1, SG_Settings.dist + 1));
+        int spaceZ = random.nextInt(Math.max(1, SG_Settings.dist + 1));
+        
+        if(!SG_Settings.rngSpacing)
+        {
+        	spaceX = spaceY = spaceZ = SG_Settings.dist;
+        }
         
         ArrayList<TileEntityChest> pendingChests = new ArrayList<TileEntityChest>();
         

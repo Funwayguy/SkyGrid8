@@ -20,17 +20,17 @@ import com.google.gson.JsonObject;
 
 public class GridRegistry
 {
-	public static ArrayList<GridBlock> blockOverworld = new ArrayList<GridBlock>();
+	public static ArrayList<GridBlock> blocksOverworld = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksNether = new ArrayList<GridBlock>();
 	
 	public static void loadBlocks()
 	{
 		File f = new File("config/skygrid8_overworld.json");
-		blockOverworld = new ArrayList<GridBlock>();
+		blocksOverworld = new ArrayList<GridBlock>();
 		
 		if(!f.exists())
 		{
-			generateDefaults(f, blockOverworld);
+			generateDefaults(f, blocksOverworld);
 		} else
 		{
 			JsonArray list = JsonHelper.ReadArrayFromFile(f);
@@ -41,10 +41,10 @@ public class GridRegistry
 					continue;
 				}
 				
-				blockOverworld.add(new GridBlock(e.getAsJsonObject()));
+				blocksOverworld.add(new GridBlock(e.getAsJsonObject()));
 			}
 		}
-		SkyGrid8.logger.log(Level.INFO, "Loaded " + blockOverworld.size() + " Overworld grid blocks");
+		SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksOverworld.size() + " Overworld grid blocks");
 		
 		f = new File("config/skygrid8_nether.json");
 		blocksNether = new ArrayList<GridBlock>();
@@ -72,7 +72,7 @@ public class GridRegistry
 	public static void saveBlocks()
 	{
 		JsonArray oList = new JsonArray();
-		for(GridBlock g : blocksNether)
+		for(GridBlock g : blocksOverworld)
 		{
 			JsonObject j = new JsonObject();
 			g.writeToJson(j);
