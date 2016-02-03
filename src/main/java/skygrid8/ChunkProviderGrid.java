@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.IProgressUpdate;
-import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
@@ -21,15 +18,16 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import skygrid8.config.GridBlock;
 import skygrid8.core.SG_Settings;
 
 public class ChunkProviderGrid implements IChunkProvider
 {
     private World worldObj;
     private Random random;
-    private final ArrayList<IBlockState> gridBlocks;
+    private final ArrayList<GridBlock> gridBlocks;
     
-    public ChunkProviderGrid(World world, long seed, ArrayList<IBlockState> blocks)
+    public ChunkProviderGrid(World world, long seed, ArrayList<GridBlock> blocks)
     {
     	worldObj = world;
     	random = new Random(seed);
@@ -47,38 +45,32 @@ public class ChunkProviderGrid implements IChunkProvider
 	{
         ChunkPrimer chunkprimer = new ChunkPrimer();
         
+        int spaceX = Math.max(2, random.nextInt(Math.max(1, SG_Settings.dist)));
+        int spaceY = Math.max(2, random.nextInt(Math.max(1, SG_Settings.dist)));
+        int spaceZ = Math.max(2, random.nextInt(Math.max(1, SG_Settings.dist)));
+        
         ArrayList<TileEntityChest> pendingChests = new ArrayList<TileEntityChest>();
         
-        for (int i = 0; i < 256 && i < SG_Settings.height; i += SG_Settings.dist)
+        for (int i = 0; i < 256 && i < SG_Settings.height; i += spaceY)
         {
             for (int j = 0; j < 16; ++j)
             {
                 for (int k = 0; k < 16; ++k)
                 {
-                    IBlockState iblockstate = gridBlocks.size() <= 0? Blocks.bedrock.getDefaultState() : gridBlocks.get(random.nextInt(gridBlocks.size()));
+                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.bedrock) : gridBlocks.get(random.nextInt(gridBlocks.size()));
                     
-                	if((x*16 + j)%SG_Settings.dist != 0 || (z*16 + k)%SG_Settings.dist != 0 || iblockstate == null)
+                	if((x*16 + j)%spaceX != 0 || (z*16 + k)%spaceZ != 0 || gb == null)
                 	{
                 		chunkprimer.setBlockState(j, i, k, Blocks.air.getDefaultState());
                 	} else
                 	{
-                		chunkprimer.setBlockState(j, i, k, iblockstate);
+                		chunkprimer.setBlockState(j, i, k, gb.block);
                 		
-                		if(i < 255 && iblockstate.getBlock() instanceof BlockFarmland)
+                		IBlockState plant = gb.plants.size() <= 0? null : gb.plants.get(random.nextInt(gb.plants.size()));
+                		
+                		if(i < 255 && plant != null)
                 		{
-                			IBlockState crop = SG_Settings.fBlockList.size() <= 0? null : SG_Settings.fBlockList.get(random.nextInt(SG_Settings.fBlockList.size()));
-                			
-                			if(crop != null)
-                			{
-                				chunkprimer.setBlockState(j, i + 1, k, crop);
-                			}
-                		} else if(iblockstate.getBlock().getClass() == BlockChest.class)
-                		{
-                			TileEntityChest cTile = new TileEntityChest();
-                			WeightedRandomChestContent.generateChestContents(random, ChestGenHooks.getItems(lootChests.get(random.nextInt(lootChests.size())), random), cTile, 8);
-                			cTile.setWorldObj(worldObj); // Must be done after contents are set
-                			cTile.setPos(new BlockPos(j, i, k));
-                			pendingChests.add(cTile);
+                			chunkprimer.setBlockState(j, i + 1, k, plant);
                 		}
                 	}
                 }

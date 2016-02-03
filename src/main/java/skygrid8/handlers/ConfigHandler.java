@@ -2,9 +2,10 @@ package skygrid8.handlers;
 
 import java.util.ArrayList;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
+import skygrid8.config.GridBlock;
+import skygrid8.config.GridRegistry;
 import skygrid8.core.SG_Settings;
 import skygrid8.core.SkyGrid8;
 
@@ -25,46 +26,59 @@ public class ConfigHandler
 		SG_Settings.height = config.getInt("Grid Height", Configuration.CATEGORY_GENERAL, 128, 1, 255, "How high should the grid of blocks be");
 		SG_Settings.dist = config.getInt("Grid Spacing", Configuration.CATEGORY_GENERAL, 3, 0, 15, "How much open space should there be between blocks") + 1;
 		SG_Settings.populate = config.getBoolean("Natural Populate", Configuration.CATEGORY_GENERAL, false, "Naturally populate the grid with trees and plants");
-		String[] tmp = config.getStringList("Overworld Grid Blocks", Configuration.CATEGORY_GENERAL, SG_Settings.defBlockList, "Which blocks should be present in the grid");
+		SG_Settings.rngSpacing = config.getBoolean("Random Spacing", Configuration.CATEGORY_GENERAL, false, "Randomise the spacing between 1 and the configured value (per chunk)");
+		GridRegistry.loadBlocks();
 		
-		SG_Settings.oBlockList = new ArrayList<IBlockState>();
+		boolean flag = false;
 		
-		for(String s : tmp)
+		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Overworld Grid Blocks")) // Legacy config
 		{
-			Block b = Block.getBlockFromName(s);
+			String[] tmp = config.getStringList("Overworld Grid Blocks", Configuration.CATEGORY_GENERAL, new String[0], "Which blocks should be present in the grid");
 			
-			if(b != null)
+			GridRegistry.blockOverworld = new ArrayList<GridBlock>();
+			
+			for(String s : tmp)
 			{
-				SG_Settings.oBlockList.add(b.getDefaultState());
+				Block b = Block.getBlockFromName(s);
+				
+				if(b != null)
+				{
+					GridRegistry.blockOverworld.add(new GridBlock(b));
+				}
 			}
+			
+			config.getCategory(Configuration.CATEGORY_GENERAL).remove("Overworld Grid Blocks");
+			flag = true;
 		}
 		
-		tmp = config.getStringList("Nether Grid Blocks", Configuration.CATEGORY_GENERAL, SG_Settings.defBlockList, "Which blocks should be present in the grid");
-		
-		SG_Settings.nBlockList = new ArrayList<IBlockState>();
-		
-		for(String s : tmp)
+		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Nether Grid Blocks")) // Legacy config
 		{
-			Block b = Block.getBlockFromName(s);
+			String[] tmp = config.getStringList("Nether Grid Blocks", Configuration.CATEGORY_GENERAL, new String[0], "Which blocks should be present in the grid");
 			
-			if(b != null)
+			GridRegistry.blocksNether = new ArrayList<GridBlock>();
+			
+			for(String s : tmp)
 			{
-				SG_Settings.nBlockList.add(b.getDefaultState());
+				Block b = Block.getBlockFromName(s);
+				
+				if(b != null)
+				{
+					GridRegistry.blocksNether.add(new GridBlock(b));
+				}
 			}
+			
+			config.getCategory(Configuration.CATEGORY_GENERAL).remove("Nether Grid Blocks");
+			flag = true;
 		}
 		
-		tmp = config.getStringList("Crops", Configuration.CATEGORY_GENERAL, SG_Settings.defFarmList, "Which blocks should be present in the grid");
-		
-		SG_Settings.fBlockList = new ArrayList<IBlockState>();
-		
-		for(String s : tmp)
+		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Crops")) // Legacy config
 		{
-			Block b = Block.getBlockFromName(s);
-			
-			if(b != null)
-			{
-				SG_Settings.fBlockList.add(b.getDefaultState());
-			}
+			config.getCategory(Configuration.CATEGORY_GENERAL).remove("Crops");
+		}
+		
+		if(flag)
+		{
+			GridRegistry.saveBlocks();
 		}
 		
 		config.save();

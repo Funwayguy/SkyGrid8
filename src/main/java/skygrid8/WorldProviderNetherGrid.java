@@ -9,6 +9,7 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import skygrid8.config.GridRegistry;
 import skygrid8.core.SG_Settings;
 
 public class WorldProviderNetherGrid extends WorldProvider
@@ -30,7 +31,7 @@ public class WorldProviderNetherGrid extends WorldProvider
      */
     public IChunkProvider createChunkGenerator()
     {
-    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), SG_Settings.nBlockList);
+    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), GridRegistry.blocksNether);
     }
     
     /**

@@ -1,5 +1,6 @@
 package skygrid8;
 
+import skygrid8.config.GridRegistry;
 import skygrid8.core.SG_Settings;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.WorldProvider;
@@ -24,7 +25,7 @@ public class WorldProviderOverworldGrid extends WorldProvider
      */
     public IChunkProvider createChunkGenerator()
     {
-    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), SG_Settings.oBlockList);
+    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), GridRegistry.blockOverworld);
     }
     
     /**
