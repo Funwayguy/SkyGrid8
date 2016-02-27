@@ -2,6 +2,7 @@ package skygrid8.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockCrops;
@@ -22,6 +23,36 @@ public class GridRegistry
 {
 	public static ArrayList<GridBlock> blocksOverworld = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksNether = new ArrayList<GridBlock>();
+	
+	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list)
+	{
+		int total = getTotalWeight(list);
+		float r = rand.nextFloat() * total;
+		int cnt = 0;
+		
+		for(GridBlock entry : list)
+		{
+			cnt += entry.weight;
+			if(cnt >= r)
+			{
+				return entry;
+			}
+		}
+		
+		return new GridBlock(Blocks.bedrock);
+	}
+	
+	public static int getTotalWeight(ArrayList<GridBlock> list)
+	{
+		int t = 0;
+		
+		for(GridBlock g : list)
+		{
+			t += g.weight;
+		}
+		
+		return t;
+	}
 	
 	public static void loadBlocks()
 	{

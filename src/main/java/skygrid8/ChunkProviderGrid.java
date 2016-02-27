@@ -17,6 +17,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkProvider;
 import skygrid8.config.GridBlock;
+import skygrid8.config.GridRegistry;
 import skygrid8.core.SG_Settings;
 
 public class ChunkProviderGrid implements IChunkProvider
@@ -60,23 +61,23 @@ public class ChunkProviderGrid implements IChunkProvider
             {
                 for (int k = 0; k < 16; ++k)
                 {
-                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.bedrock) : gridBlocks.get(random.nextInt(gridBlocks.size()));
+                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.bedrock) : GridRegistry.getRandom(random, gridBlocks);
                     
                 	if((x*16 + j)%spaceX != 0 || (z*16 + k)%spaceZ != 0 || gb == null)
                 	{
                 		chunkprimer.setBlockState(j, i, k, Blocks.air.getDefaultState());
                 	} else
                 	{
-                		chunkprimer.setBlockState(j, i, k, gb.block);
+                		chunkprimer.setBlockState(j, i, k, gb.getState());
                 		
-                		IBlockState plant = gb.plants.size() <= 0? null : gb.plants.get(random.nextInt(gb.plants.size()));
+                		IBlockState plant = gb.plants.size() <= 0? null : gb.plants.get(random.nextInt(gb.plants.size())).getState();
                 		
                 		if(i < 255 && plant != null)
                 		{
                 			chunkprimer.setBlockState(j, i + 1, k, plant);
                 		}
                     	
-                    	if(gb.block.getBlock() instanceof ITileEntityProvider)
+                    	if(gb.getState().getBlock() instanceof ITileEntityProvider)
                     	{
                     		PostGenerator.addLocation(worldObj.provider.getDimensionId(), x, z, new BlockPos(x*16 + j, i, z*16 + k));
                     	}

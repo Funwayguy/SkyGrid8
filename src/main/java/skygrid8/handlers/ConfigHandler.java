@@ -34,8 +34,6 @@ public class ConfigHandler
 		SG_Settings.spawnN.addAll(Arrays.asList(config.getStringList("Spawners Nether", Configuration.CATEGORY_GENERAL, new String[] {"Blaze", "PigZombie", "LavaSlime"}, "Sets the possible spawner types in the grid")));
 		GridRegistry.loadBlocks();
 		
-		boolean flag = false;
-		
 		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Overworld Grid Blocks")) // Legacy config
 		{
 			String[] tmp = config.getStringList("Overworld Grid Blocks", Configuration.CATEGORY_GENERAL, new String[0], "Which blocks should be present in the grid");
@@ -53,7 +51,6 @@ public class ConfigHandler
 			}
 			
 			config.getCategory(Configuration.CATEGORY_GENERAL).remove("Overworld Grid Blocks");
-			flag = true;
 		}
 		
 		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Nether Grid Blocks")) // Legacy config
@@ -73,7 +70,6 @@ public class ConfigHandler
 			}
 			
 			config.getCategory(Configuration.CATEGORY_GENERAL).remove("Nether Grid Blocks");
-			flag = true;
 		}
 		
 		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Crops")) // Legacy config
@@ -81,10 +77,7 @@ public class ConfigHandler
 			config.getCategory(Configuration.CATEGORY_GENERAL).remove("Crops");
 		}
 		
-		if(flag)
-		{
-			GridRegistry.saveBlocks();
-		}
+		GridRegistry.saveBlocks();
 		
 		config.save();
 		

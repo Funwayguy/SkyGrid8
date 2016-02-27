@@ -12,9 +12,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class GridBlock
 {
-	public IBlockState block = Blocks.stone.getDefaultState();
+	public int weight = 10;
+	String name = "minecraft:stone";
+	int meta = 0;
+	private IBlockState block;
 	
-	public ArrayList<IBlockState> plants = new ArrayList<IBlockState>();
+	public ArrayList<GridPlant> plants = new ArrayList<GridPlant>();
 	
 	public GridBlock(JsonObject json)
 	{
@@ -36,9 +39,15 @@ public class GridBlock
 		this(b.getStateFromMeta(meta));
 	}
 	
+	public GridBlock(String name, int meta)
+	{
+		this.name = name;
+		this.meta = meta;
+	}
+	
 	public void addPlant(IBlockState state)
 	{
-		plants.add(state);
+		plants.add(new GridPlant(state));
 	}
 	
 	public void addPlant(Block b)
@@ -51,22 +60,43 @@ public class GridBlock
 		addPlant(b.getStateFromMeta(meta));
 	}
 	
+	public void addPlant(String name, int meta)
+	{
+		plants.add(new GridPlant(name, meta));
+	}
+	
 	public boolean hasPlants()
 	{
 		return plants != null && plants.size() > 0;
 	}
 	
+	public IBlockState getState()
+	{
+		if(block == null)
+		{
+			Block b = Block.getBlockFromName(name);
+			
+			if(b != null)
+			{
+				block = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
+			}
+		}
+		
+		return block != null? block : Blocks.stone.getDefaultState();
+	}
+	
 	public void writeToJson(JsonObject json)
 	{
-		json.addProperty("block", Block.blockRegistry.getNameForObject(block.getBlock()).toString());
-		json.addProperty("meta", block.getBlock().getMetaFromState(block));
+		json.addProperty("block", name);
+		json.addProperty("meta", meta);
+		json.addProperty("weight", weight);
 		
 		JsonArray pList = new JsonArray();
-		for(IBlockState state : plants)
+		for(GridPlant plant : plants)
 		{
 			JsonObject tmp = new JsonObject();
-			tmp.addProperty("block", Block.blockRegistry.getNameForObject(state.getBlock()).toString());
-			tmp.addProperty("meta", state.getBlock().getMetaFromState(state));
+			tmp.addProperty("block", plant.name);
+			tmp.addProperty("meta", plant.meta);
 			pList.add(tmp);
 		}
 		json.add("plants", pList);
@@ -74,14 +104,11 @@ public class GridBlock
 	
 	public void readFromJson(JsonObject json)
 	{
-		Block b = Block.getBlockFromName(JsonHelper.GetString(json, "block", "minecraft:stone"));
-		b = b != null? b : Blocks.stone;
-		int meta = JsonHelper.GetNumber(json, "meta", -1).intValue();
+		name = JsonHelper.GetString(json, "block", "minecraft:stone");
+		meta = JsonHelper.GetNumber(json, "meta", -1).intValue();
+		weight = JsonHelper.GetNumber(json, "weight", weight).intValue();
 		
-		IBlockState state = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
-		block = state != null? state : Blocks.stone.getDefaultState();
-		
-		plants = new ArrayList<IBlockState>();
+		plants = new ArrayList<GridPlant>();
 		for(JsonElement e : JsonHelper.GetArray(json, "plants"))
 		{
 			if(e == null || !e.isJsonObject())
@@ -90,11 +117,9 @@ public class GridBlock
 			}
 			
 			JsonObject tmp = e.getAsJsonObject();
-			b = Block.getBlockFromName(JsonHelper.GetString(tmp, "block", "minecraft:stone"));
-			b = b != null? b : Blocks.stone;
-			meta = JsonHelper.GetNumber(tmp, "meta", -1).intValue();
-			state = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
-			plants.add(state != null? state : Blocks.stone.getDefaultState());
+			String pn = JsonHelper.GetString(tmp, "block", "minecraft:stone");
+			int pm = JsonHelper.GetNumber(tmp, "meta", -1).intValue();
+			plants.add(new GridPlant(pn, pm));
 		}
 	}
 	
@@ -125,5 +150,40 @@ public class GridBlock
 		}
 		
 		return new GridBlock(b);
+	}
+	
+	public static class GridPlant
+	{
+		String name = "minecraft:tall_grass";
+		int meta = 0;
+		IBlockState block;
+		
+		public GridPlant(IBlockState block)
+		{
+			this.block = block;
+			meta = block.getBlock().getMetaFromState(block);
+			name = Block.blockRegistry.getNameForObject(block.getBlock()).toString();
+		}
+		
+		public GridPlant(String name, int meta)
+		{
+			this.name = name;
+			this.meta = meta;
+		}
+		
+		public IBlockState getState()
+		{
+			if(block == null)
+			{
+				Block b = Block.getBlockFromName(name);
+				
+				if(b != null)
+				{
+					block = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
+				}
+			}
+			
+			return block != null? block : Blocks.stone.getDefaultState();
+		}
 	}
 }
