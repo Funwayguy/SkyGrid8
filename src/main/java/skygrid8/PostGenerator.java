@@ -62,13 +62,14 @@ public class PostGenerator implements IWorldGenerator
 	
 	public static void addLocation(int dimension, int chunkX, int chunkZ, BlockPos pos)
 	{
-		ArrayList<BlockPos> list = tileLoc.get(dimension);
+		String key = dimension + ":" + chunkX + ":" + chunkZ;
+		ArrayList<BlockPos> list = tileLoc.get(key);
 		list = list != null? list : new ArrayList<BlockPos>();
 		
 		if(!list.contains(pos))
 		{
 			list.add(pos);
-			tileLoc.put(dimension + ":" + chunkX + ":" + chunkZ, list);
+			tileLoc.put(key, list);
 		}
 	}
 	
