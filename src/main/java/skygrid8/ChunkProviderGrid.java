@@ -78,7 +78,7 @@ public class ChunkProviderGrid implements IChunkProvider
                     	
                     	if(gb.block.getBlock() instanceof ITileEntityProvider)
                     	{
-                    		PostGenerator.addLocation(worldObj.provider.getDimensionId(), new BlockPos(x*16 + j, i, z*16 + k));
+                    		PostGenerator.addLocation(worldObj.provider.getDimensionId(), x, z, new BlockPos(x*16 + j, i, z*16 + k));
                     	}
                 	}
                 }

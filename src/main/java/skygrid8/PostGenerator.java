@@ -16,12 +16,13 @@ import skygrid8.core.SG_Settings;
 
 public class PostGenerator implements IWorldGenerator
 {
-	public static HashMap<Integer,ArrayList<BlockPos>> tileLoc = new HashMap<Integer,ArrayList<BlockPos>>();
+	public static HashMap<String,ArrayList<BlockPos>> tileLoc = new HashMap<String,ArrayList<BlockPos>>();
 	
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		ArrayList<BlockPos> list = tileLoc.remove(world.provider.getDimensionId());
+		String key = world.provider.getDimensionId() + ":" + chunkX + ":" + chunkZ;
+		ArrayList<BlockPos> list = tileLoc.get(key);
 		
 		if(list == null)
 		{
@@ -55,9 +56,11 @@ public class PostGenerator implements IWorldGenerator
 				}
 			}
 		}
+		
+		list.clear();
 	}
 	
-	public static void addLocation(int dimension, BlockPos pos)
+	public static void addLocation(int dimension, int chunkX, int chunkZ, BlockPos pos)
 	{
 		ArrayList<BlockPos> list = tileLoc.get(dimension);
 		list = list != null? list : new ArrayList<BlockPos>();
@@ -65,12 +68,12 @@ public class PostGenerator implements IWorldGenerator
 		if(!list.contains(pos))
 		{
 			list.add(pos);
-			tileLoc.put(dimension, list);
+			tileLoc.put(dimension + ":" + chunkX + ":" + chunkZ, list);
 		}
 	}
 	
 	public static void resetLocations()
 	{
-		tileLoc = new HashMap<Integer,ArrayList<BlockPos>>();
+		tileLoc.clear();
 	}
 }
