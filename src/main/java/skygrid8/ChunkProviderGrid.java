@@ -1,9 +1,9 @@
 package skygrid8;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
@@ -16,8 +16,6 @@ import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.common.ChestGenHooks;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import skygrid8.config.GridBlock;
 import skygrid8.core.SG_Settings;
 
@@ -77,6 +75,11 @@ public class ChunkProviderGrid implements IChunkProvider
                 		{
                 			chunkprimer.setBlockState(j, i + 1, k, plant);
                 		}
+                    	
+                    	if(gb.block.getBlock() instanceof ITileEntityProvider)
+                    	{
+                    		PostGenerator.addLocation(worldObj.provider.getDimensionId(), new BlockPos(x*16 + j, i, z*16 + k));
+                    	}
                 	}
                 }
             }
@@ -180,18 +183,5 @@ public class ChunkProviderGrid implements IChunkProvider
 	@Override
 	public void saveExtraData()
 	{
-	}
-	
-	static ArrayList<String> lootChests = new ArrayList<String>();
-	
-	static
-	{
-		HashMap<String, ChestGenHooks> lootMap = ObfuscationReflectionHelper.getPrivateValue(ChestGenHooks.class, null, "chestInfo");
-		lootChests.addAll(lootMap.keySet());
-		
-		if(lootChests.size() <= 0)
-		{
-			lootChests.add(ChestGenHooks.DUNGEON_CHEST);
-		}
 	}
 }

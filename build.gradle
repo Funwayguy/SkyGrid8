@@ -18,8 +18,8 @@ group= "skygrid8" // http://maven.apache.org/guides/mini/guide-naming-convention
 archivesBaseName = "SkyGrid8"
 
 minecraft {
-    version = "1.8.8-11.15.0.1635-1.8.8"
-    mappings = "snapshot_20151122"
+    version = "1.8.9-11.15.1.1722"
+    mappings = "stable_20"
 }
 
 dependencies {

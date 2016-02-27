@@ -1,6 +1,7 @@
 package skygrid8.handlers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
@@ -27,6 +28,10 @@ public class ConfigHandler
 		SG_Settings.dist = config.getInt("Grid Spacing", Configuration.CATEGORY_GENERAL, 3, 0, 15, "How much open space should there be between blocks") + 1;
 		SG_Settings.populate = config.getBoolean("Natural Populate", Configuration.CATEGORY_GENERAL, false, "Naturally populate the grid with trees and plants");
 		SG_Settings.rngSpacing = config.getBoolean("Random Spacing", Configuration.CATEGORY_GENERAL, false, "Randomise the spacing between 1 and the configured value (per chunk)");
+		SG_Settings.spawnO = new ArrayList<String>();
+		SG_Settings.spawnO.addAll(Arrays.asList(config.getStringList("Spawners Overworld", Configuration.CATEGORY_GENERAL, new String[] {"Skeleton", "Zombie", "Spider", "CaveSpider"}, "Sets the possible spawner types in the grid")));
+		SG_Settings.spawnN = new ArrayList<String>();
+		SG_Settings.spawnN.addAll(Arrays.asList(config.getStringList("Spawners Nether", Configuration.CATEGORY_GENERAL, new String[] {"Blaze", "PigZombie", "LavaSlime"}, "Sets the possible spawner types in the grid")));
 		GridRegistry.loadBlocks();
 		
 		boolean flag = false;
