@@ -32,6 +32,8 @@ public class ConfigHandler
 		SG_Settings.spawnO.addAll(Arrays.asList(config.getStringList("Spawners Overworld", Configuration.CATEGORY_GENERAL, new String[] {"Skeleton", "Zombie", "Spider", "CaveSpider"}, "Sets the possible spawner types in the grid")));
 		SG_Settings.spawnN = new ArrayList<String>();
 		SG_Settings.spawnN.addAll(Arrays.asList(config.getStringList("Spawners Nether", Configuration.CATEGORY_GENERAL, new String[] {"Blaze", "PigZombie", "LavaSlime"}, "Sets the possible spawner types in the grid")));
+		SG_Settings.spawnE = new ArrayList<String>();
+		SG_Settings.spawnE.addAll(Arrays.asList(config.getStringList("Spawners End", Configuration.CATEGORY_GENERAL, new String[] {"Enderman", "Endermite"}, "Sets the possible spawner types in the grid")));
 		GridRegistry.loadBlocks();
 		
 		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Overworld Grid Blocks")) // Legacy config

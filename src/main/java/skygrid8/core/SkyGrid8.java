@@ -62,6 +62,11 @@ public class SkyGrid8
     	DimensionManager.registerProviderType(-1, WorldProviderNetherGrid.class, true);
     	DimensionManager.registerDimension(-1, -1);
     	
+    	DimensionManager.unregisterDimension(1);
+    	DimensionManager.unregisterProviderType(1);
+    	DimensionManager.registerProviderType(1, WorldProviderNetherGrid.class, true);
+    	DimensionManager.registerDimension(1, 1);
+    	
     	GameRegistry.registerWorldGenerator(new PostGenerator(), 0);
     }
     

@@ -16,6 +16,7 @@ public class SG_Settings
 	public static int dist = 4;
 	public static ArrayList<String> spawnO = new ArrayList<String>();
 	public static ArrayList<String> spawnN = new ArrayList<String>();
+	public static ArrayList<String> spawnE = new ArrayList<String>();
 	
 	public static ArrayList<String> lootChests = new ArrayList<String>();
 	

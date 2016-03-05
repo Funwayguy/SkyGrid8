@@ -7,7 +7,6 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.World;
@@ -53,8 +52,6 @@ public class ChunkProviderGrid implements IChunkProvider
         	spaceX = spaceY = spaceZ = SG_Settings.dist;
         }
         
-        ArrayList<TileEntityChest> pendingChests = new ArrayList<TileEntityChest>();
-        
         for (int i = 0; i < 256 && i < SG_Settings.height; i += spaceY)
         {
             for (int j = 0; j < 16; ++j)
@@ -85,13 +82,13 @@ public class ChunkProviderGrid implements IChunkProvider
                 }
             }
         }
+        
+        if(x == 0 && z == 0)
+        {
+        	chunkprimer.setBlockState(0, SG_Settings.height, 0, Blocks.bedrock.getDefaultState());
+        }
 
         Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
-        
-        for(TileEntityChest ct : pendingChests)
-        {
-        	chunk.addTileEntity(ct);
-        }
         
         BiomeGenBase[] abiomegenbase = this.worldObj.getWorldChunkManager().loadBlockGeneratorData((BiomeGenBase[])null, x * 16, z * 16, 16, 16);
         byte[] abyte = chunk.getBiomeArray();

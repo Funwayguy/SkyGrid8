@@ -3,6 +3,7 @@ package skygrid8;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
@@ -48,7 +49,20 @@ public class PostGenerator implements IWorldGenerator
 			} else if(tile instanceof TileEntityMobSpawner)
 			{
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-				ArrayList<String> entities = world.provider.getDimensionId() == -1? SG_Settings.spawnN : SG_Settings.spawnO;
+				ArrayList<String> entities = new ArrayList<String>();
+				
+				switch(world.provider.getDimensionId())
+				{
+					case -1:
+						entities = SG_Settings.spawnN;
+						break;
+					case 1:
+						entities = SG_Settings.spawnE;
+						break;
+					default:
+						entities = SG_Settings.spawnO;
+						break;
+				}
 				
 				if(entities.size() > 0)
 				{
@@ -58,6 +72,13 @@ public class PostGenerator implements IWorldGenerator
 		}
 		
 		list.clear();
+		
+		if(world.provider.getDimensionId() == 1 && chunkX == 0 && chunkZ == 0)
+		{
+			EntityDragon dragon = new EntityDragon(world);
+			dragon.setPosition(0, SG_Settings.height + 16, 0);
+			world.spawnEntityInWorld(dragon);
+		}
 	}
 	
 	public static void addLocation(int dimension, int chunkX, int chunkZ, BlockPos pos)

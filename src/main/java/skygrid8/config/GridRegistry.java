@@ -23,6 +23,7 @@ public class GridRegistry
 {
 	public static ArrayList<GridBlock> blocksOverworld = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksNether = new ArrayList<GridBlock>();
+	public static ArrayList<GridBlock> blocksEnd = new ArrayList<GridBlock>();
 	
 	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list)
 	{
@@ -98,6 +99,28 @@ public class GridRegistry
 		}
 		
 		SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksNether.size() + " Nether grid blocks");
+		
+		f = new File("config/skygrid8_end.json");
+		blocksEnd = new ArrayList<GridBlock>();
+		
+		if(!f.exists())
+		{
+			generateDefaults(f, blocksEnd);
+		} else
+		{
+			JsonArray list = JsonHelper.ReadArrayFromFile(f);
+			for(JsonElement e : list)
+			{
+				if(e == null || !e.isJsonObject())
+				{
+					continue;
+				}
+				
+				blocksEnd.add(new GridBlock(e.getAsJsonObject()));
+			}
+		}
+		
+		SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksEnd.size() + " End grid blocks");
 	}
 	
 	public static void saveBlocks()
@@ -119,6 +142,15 @@ public class GridRegistry
 			nList.add(j);
 		}
 		JsonHelper.WriteToFile(new File("config/skygrid8_nether.json"), nList);
+		
+		JsonArray eList = new JsonArray();
+		for(GridBlock g : blocksEnd)
+		{
+			JsonObject j = new JsonObject();
+			g.writeToJson(j);
+			eList.add(j);
+		}
+		JsonHelper.WriteToFile(new File("config/skygrid8_end.json"), eList);
 	}
 	
 	public static void generateDefaults(File f, ArrayList<GridBlock> blockList)
