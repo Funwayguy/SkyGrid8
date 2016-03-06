@@ -10,6 +10,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import skygrid8.config.GridRegistry;
+import skygrid8.core.SG_Settings;
 
 public class WorldProviderEndGrid extends WorldProvider
 {
@@ -107,7 +108,7 @@ public class WorldProviderEndGrid extends WorldProvider
 
     public BlockPos getSpawnCoordinate()
     {
-        return new BlockPos(100, 50, 0);
+        return new BlockPos(0, SG_Settings.height + 1, 0);
     }
 
     public int getAverageGroundLevel()

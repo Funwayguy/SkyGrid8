@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 import skygrid8.PostGenerator;
+import skygrid8.WorldProviderEndGrid;
 import skygrid8.WorldProviderNetherGrid;
 import skygrid8.WorldProviderOverworldGrid;
 import skygrid8.core.proxies.CommonProxy;
@@ -64,7 +65,7 @@ public class SkyGrid8
     	
     	DimensionManager.unregisterDimension(1);
     	DimensionManager.unregisterProviderType(1);
-    	DimensionManager.registerProviderType(1, WorldProviderNetherGrid.class, true);
+    	DimensionManager.registerProviderType(1, WorldProviderEndGrid.class, true);
     	DimensionManager.registerDimension(1, 1);
     	
     	GameRegistry.registerWorldGenerator(new PostGenerator(), 0);
