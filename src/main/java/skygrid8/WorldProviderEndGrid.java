@@ -1,12 +1,16 @@
 package skygrid8;
 
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.init.Biomes;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.biome.WorldChunkManagerHell;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.BiomeProviderSingle;
+import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import skygrid8.config.GridRegistry;
@@ -14,28 +18,28 @@ import skygrid8.core.SG_Settings;
 
 public class WorldProviderEndGrid extends WorldProvider
 {
+    private DragonFightManager dragonFightManager = null;
+
     /**
      * creates a new world chunk manager for WorldProvider
      */
     public void registerWorldChunkManager()
     {
-        this.worldChunkMgr = new WorldChunkManagerHell(BiomeGenBase.sky, 0.0F);
-        this.dimensionId = 1;
+        this.worldChunkMgr = new BiomeProviderSingle(Biomes.sky);
         this.hasNoSky = true;
+        NBTTagCompound nbttagcompound = this.worldObj.getWorldInfo().getDimensionData(DimensionType.THE_END);
+        this.dragonFightManager = this.worldObj instanceof WorldServer ? new DragonFightManager((WorldServer)this.worldObj, nbttagcompound.getCompoundTag("DragonFight")) : null;
     }
 
-    /**
-     * Returns a new chunk provider which generates chunks for this world
-     */
-    public IChunkProvider createChunkGenerator()
+    public IChunkGenerator createChunkGenerator()
     {
-    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), GridRegistry.blocksEnd);
+        return new ChunkProviderGrid(this.worldObj, this.worldObj.getSeed(), GridRegistry.blocksEnd);
     }
 
     /**
      * Calculates the angle of sun and moon in the sky relative to a specified time (usually worldTime)
      */
-    public float calculateCelestialAngle(long p_76563_1_, float p_76563_3_)
+    public float calculateCelestialAngle(long worldTime, float partialTicks)
     {
         return 0.0F;
     }
@@ -53,10 +57,10 @@ public class WorldProviderEndGrid extends WorldProvider
      * Return Vec3D with biome specific fog color
      */
     @SideOnly(Side.CLIENT)
-    public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
+    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_)
     {
         int i = 10518688;
-        float f = MathHelper.cos(p_76562_1_ * (float)Math.PI * 2.0F) * 2.0F + 0.5F;
+        float f = MathHelper.cos(p_76562_1_ * ((float)Math.PI * 2F)) * 2.0F + 0.5F;
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
         float f1 = (float)(i >> 16 & 255) / 255.0F;
         float f2 = (float)(i >> 8 & 255) / 255.0F;
@@ -64,7 +68,7 @@ public class WorldProviderEndGrid extends WorldProvider
         f1 = f1 * (f * 0.0F + 0.15F);
         f2 = f2 * (f * 0.0F + 0.15F);
         f3 = f3 * (f * 0.0F + 0.15F);
-        return new Vec3((double)f1, (double)f2, (double)f3);
+        return new Vec3d((double)f1, (double)f2, (double)f3);
     }
 
     @SideOnly(Side.CLIENT)
@@ -108,12 +112,12 @@ public class WorldProviderEndGrid extends WorldProvider
 
     public BlockPos getSpawnCoordinate()
     {
-        return new BlockPos(0, SG_Settings.height + 1, 0);
+        return new BlockPos(100, SG_Settings.height + 1, 0);
     }
 
     public int getAverageGroundLevel()
     {
-        return 50;
+        return SG_Settings.height;
     }
 
     /**
@@ -122,19 +126,44 @@ public class WorldProviderEndGrid extends WorldProvider
     @SideOnly(Side.CLIENT)
     public boolean doesXZShowFog(int x, int z)
     {
-        return true;
+        return false;
+    }
+
+    public DimensionType getDimensionType()
+    {
+        return DimensionType.THE_END;
     }
 
     /**
-     * Returns the dimension's name, e.g. "The End", "Nether", or "Overworld".
+     * Called when the world is performing a save. Only used to save the state of the Dragon Boss fight in
+     * WorldProviderEnd in Vanilla.
      */
-    public String getDimensionName()
+    public void onWorldSave()
     {
-        return "EndGrid";
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+
+        if (this.dragonFightManager != null)
+        {
+            nbttagcompound.setTag("DragonFight", this.dragonFightManager.getCompound());
+        }
+
+        this.worldObj.getWorldInfo().setDimensionData(DimensionType.THE_END, nbttagcompound);
     }
 
-    public String getInternalNameSuffix()
+    /**
+     * Called when the world is updating entities. Only used in WorldProviderEnd to update the DragonFightManager in
+     * Vanilla.
+     */
+    public void onWorldUpdateEntities()
     {
-        return "_endgrid";
+        if (this.dragonFightManager != null)
+        {
+            this.dragonFightManager.tick();
+        }
+    }
+
+    public DragonFightManager getDragonFightManager()
+    {
+        return this.dragonFightManager;
     }
 }

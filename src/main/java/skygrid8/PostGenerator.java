@@ -7,11 +7,15 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.common.ChestGenHooks;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import skygrid8.core.SG_Settings;
 
@@ -20,9 +24,9 @@ public class PostGenerator implements IWorldGenerator
 	public static HashMap<String,ArrayList<BlockPos>> tileLoc = new HashMap<String,ArrayList<BlockPos>>();
 	
 	@Override
-	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
 	{
-		String key = world.provider.getDimensionId() + ":" + chunkX + ":" + chunkZ;
+		String key = world.provider.getDimension() + ":" + chunkX + ":" + chunkZ;
 		ArrayList<BlockPos> list = tileLoc.get(key);
 		
 		if(list == null)
@@ -43,15 +47,21 @@ public class PostGenerator implements IWorldGenerator
 				
 				if(invo.getSizeInventory() > 0)
 				{
-					int amount = random.nextInt(Math.min(9, 1 + invo.getSizeInventory()));
-					WeightedRandomChestContent.generateChestContents(random, ChestGenHooks.getItems(SG_Settings.lootChests.get(random.nextInt(SG_Settings.lootChests.size())), random), invo, amount);
+					ArrayList<ResourceLocation> lootList = new ArrayList<ResourceLocation>(LootTableList.getAll());
+					ResourceLocation lootRes = lootList.get(random.nextInt(lootList.size()));
+					
+					LootTable loottable = world.getLootTableManager().getLootTableFromLocation(lootRes);
+
+		            LootContext.Builder lootcontext$builder = new LootContext.Builder((WorldServer)world);
+
+		            loottable.fillInventory(invo, random, lootcontext$builder.build());
 				}
 			} else if(tile instanceof TileEntityMobSpawner)
 			{
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
 				ArrayList<String> entities = new ArrayList<String>();
 				
-				switch(world.provider.getDimensionId())
+				switch(world.provider.getDimension())
 				{
 					case -1:
 						entities = SG_Settings.spawnN;
@@ -73,7 +83,7 @@ public class PostGenerator implements IWorldGenerator
 		
 		list.clear();
 		
-		if(world.provider.getDimensionId() == 1 && chunkX == 0 && chunkZ == 0)
+		if(world.provider.getDimension() == 1 && chunkX == 0 && chunkZ == 0)
 		{
 			EntityDragon dragon = new EntityDragon(world);
 			dragon.setPosition(0, SG_Settings.height + 16, 0);

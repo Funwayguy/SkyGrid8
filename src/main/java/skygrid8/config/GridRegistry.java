@@ -183,7 +183,7 @@ public class GridRegistry
 				farmland = new GridBlock(b); // Written to list when plants have been added
 				blockList.add(farmland);
 				continue;
-			} else if(b instanceof BlockDynamicLiquid || (!b.isFullCube() && b != Blocks.chest))
+			} else if(b instanceof BlockDynamicLiquid || (!b.isFullCube(b.getDefaultState()) && b != Blocks.chest))
 			{
 				continue;
 			}

@@ -1,5 +1,6 @@
 package skygrid8.core;
 
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -54,19 +55,13 @@ public class SkyGrid8
     	proxy.registerRenderers();
     	
     	DimensionManager.unregisterDimension(0);
-    	DimensionManager.unregisterProviderType(0);
-    	DimensionManager.registerProviderType(0, WorldProviderOverworldGrid.class, true);
-    	DimensionManager.registerDimension(0, 0);
+    	DimensionManager.registerDimension(0, DimensionType.register("SkyGrid", "_skygrid", 0, WorldProviderOverworldGrid.class, true));
     	
     	DimensionManager.unregisterDimension(-1);
-    	DimensionManager.unregisterProviderType(-1);
-    	DimensionManager.registerProviderType(-1, WorldProviderNetherGrid.class, true);
-    	DimensionManager.registerDimension(-1, -1);
+    	DimensionManager.registerDimension(-1, DimensionType.register("NetherGrid", "_nethergrid", -1, WorldProviderNetherGrid.class, true));
     	
     	DimensionManager.unregisterDimension(1);
-    	DimensionManager.unregisterProviderType(1);
-    	DimensionManager.registerProviderType(1, WorldProviderEndGrid.class, true);
-    	DimensionManager.registerDimension(1, 1);
+    	DimensionManager.registerDimension(1, DimensionType.register("EndGrid", "_endgrid", 1, WorldProviderEndGrid.class, true));
     	
     	GameRegistry.registerWorldGenerator(new PostGenerator(), 0);
     }

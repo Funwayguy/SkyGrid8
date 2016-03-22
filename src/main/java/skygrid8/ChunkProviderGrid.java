@@ -7,19 +7,18 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.IProgressUpdate;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.IChunkGenerator;
 import skygrid8.config.GridBlock;
 import skygrid8.config.GridRegistry;
 import skygrid8.core.SG_Settings;
 
-public class ChunkProviderGrid implements IChunkProvider
+public class ChunkProviderGrid implements IChunkGenerator
 {
     private World worldObj;
     private Random random;
@@ -31,12 +30,6 @@ public class ChunkProviderGrid implements IChunkProvider
     	random = new Random(seed);
     	gridBlocks = blocks;
     }
-    
-	@Override
-	public boolean chunkExists(int x, int z)
-	{
-		return true;
-	}
 	
 	@Override
 	public Chunk provideChunk(int x, int z)
@@ -76,7 +69,7 @@ public class ChunkProviderGrid implements IChunkProvider
                     	
                     	if(gb.getState().getBlock() instanceof ITileEntityProvider)
                     	{
-                    		PostGenerator.addLocation(worldObj.provider.getDimensionId(), x, z, new BlockPos(x*16 + j, i, z*16 + k));
+                    		PostGenerator.addLocation(worldObj.provider.getDimension(), x, z, new BlockPos(x*16 + j, i, z*16 + k));
                     	}
                 	}
                 }
@@ -90,12 +83,12 @@ public class ChunkProviderGrid implements IChunkProvider
 
         Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
         
-        BiomeGenBase[] abiomegenbase = this.worldObj.getWorldChunkManager().loadBlockGeneratorData((BiomeGenBase[])null, x * 16, z * 16, 16, 16);
+        BiomeGenBase[] abiomegenbase = this.worldObj.getBiomeProvider().loadBlockGeneratorData((BiomeGenBase[])null, x * 16, z * 16, 16, 16);
         byte[] abyte = chunk.getBiomeArray();
 
         for (int l = 0; l < abyte.length; ++l)
         {
-            abyte[l] = (byte)abiomegenbase[l].biomeID;
+            abyte[l] = (byte)BiomeGenBase.getIdForBiome(abiomegenbase[l]);
         }
 
         chunk.generateSkylightMap();
@@ -103,13 +96,7 @@ public class ChunkProviderGrid implements IChunkProvider
 	}
 	
 	@Override
-	public Chunk provideChunk(BlockPos blockPosIn)
-	{
-        return this.provideChunk(blockPosIn.getX() >> 4, blockPosIn.getZ() >> 4);
-	}
-	
-	@Override
-	public void populate(IChunkProvider p_73153_1_, int p_73153_2_, int p_73153_3_)
+	public void populate(int p_73153_2_, int p_73153_3_)
 	{
 		if(!SG_Settings.populate)
 		{
@@ -125,33 +112,9 @@ public class ChunkProviderGrid implements IChunkProvider
 	}
 	
 	@Override
-	public boolean func_177460_a(IChunkProvider p_177460_1_, Chunk p_177460_2_, int p_177460_3_, int p_177460_4_)
+	public boolean generateStructures(Chunk p_177460_2_, int p_177460_3_, int p_177460_4_)
 	{
 		return false;
-	}
-	
-	@Override
-	public boolean saveChunks(boolean p_73151_1_, IProgressUpdate progressCallback)
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean unloadQueuedChunks()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean canSave()
-	{
-		return true;
-	}
-	
-	@Override
-	public String makeString()
-	{
-		return "SkyGrid";
 	}
 	
 	@Override
@@ -168,18 +131,7 @@ public class ChunkProviderGrid implements IChunkProvider
 	}
 	
 	@Override
-	public int getLoadedChunkCount()
-	{
-		return 0;
-	}
-	
-	@Override
 	public void recreateStructures(Chunk p_180514_1_, int p_180514_2_, int p_180514_3_)
-	{
-	}
-	
-	@Override
-	public void saveExtraData()
 	{
 	}
 }
