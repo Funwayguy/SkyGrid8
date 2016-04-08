@@ -1,16 +1,13 @@
 package skygrid8;
 
 import net.minecraft.init.Biomes;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import skygrid8.config.GridRegistry;
@@ -18,8 +15,6 @@ import skygrid8.core.SG_Settings;
 
 public class WorldProviderEndGrid extends WorldProvider
 {
-    private DragonFightManager dragonFightManager = null;
-
     /**
      * creates a new world chunk manager for WorldProvider
      */
@@ -27,8 +22,6 @@ public class WorldProviderEndGrid extends WorldProvider
     {
         this.worldChunkMgr = new BiomeProviderSingle(Biomes.sky);
         this.hasNoSky = true;
-        NBTTagCompound nbttagcompound = this.worldObj.getWorldInfo().getDimensionData(DimensionType.THE_END);
-        this.dragonFightManager = this.worldObj instanceof WorldServer ? new DragonFightManager((WorldServer)this.worldObj, nbttagcompound.getCompoundTag("DragonFight")) : null;
     }
 
     public IChunkGenerator createChunkGenerator()
@@ -132,38 +125,5 @@ public class WorldProviderEndGrid extends WorldProvider
     public DimensionType getDimensionType()
     {
         return DimensionType.THE_END;
-    }
-
-    /**
-     * Called when the world is performing a save. Only used to save the state of the Dragon Boss fight in
-     * WorldProviderEnd in Vanilla.
-     */
-    public void onWorldSave()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-        if (this.dragonFightManager != null)
-        {
-            nbttagcompound.setTag("DragonFight", this.dragonFightManager.getCompound());
-        }
-
-        this.worldObj.getWorldInfo().setDimensionData(DimensionType.THE_END, nbttagcompound);
-    }
-
-    /**
-     * Called when the world is updating entities. Only used in WorldProviderEnd to update the DragonFightManager in
-     * Vanilla.
-     */
-    public void onWorldUpdateEntities()
-    {
-        if (this.dragonFightManager != null)
-        {
-            this.dragonFightManager.tick();
-        }
-    }
-
-    public DragonFightManager getDragonFightManager()
-    {
-        return this.dragonFightManager;
     }
 }
