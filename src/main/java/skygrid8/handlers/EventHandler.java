@@ -9,7 +9,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
 	{
-		if(event.modID.equals(SkyGrid8.MODID))
+		if(event.getModID().equals(SkyGrid8.MODID))
 		{
 			ConfigHandler.config.save();
 			ConfigHandler.initConfigs();

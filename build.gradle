@@ -18,7 +18,7 @@ group= "skygrid8" // http://maven.apache.org/guides/mini/guide-naming-convention
 archivesBaseName = "SkyGrid8"
 
 minecraft {
-    version = "1.9-12.16.0.1795-1.9"
+    version = "1.9-12.16.0.1851-1.9"
     mappings = "snapshot_20160312"
 }
 

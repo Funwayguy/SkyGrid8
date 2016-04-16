@@ -3,6 +3,7 @@ package skygrid8;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +18,8 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.Loader;
+import skygrid8.compat.abyssalcraft.SGACPlugin;
 import skygrid8.core.SG_Settings;
 
 public class PostGenerator implements IWorldGenerator
@@ -70,7 +73,9 @@ public class PostGenerator implements IWorldGenerator
 						entities = SG_Settings.spawnE;
 						break;
 					default:
-						entities = SG_Settings.spawnO;
+						if(Loader.isModLoaded("abyssalcraft"))
+							entities = SGACPlugin.assignList(world.provider.getDimension());
+						else entities = SG_Settings.spawnO;
 						break;
 				}
 				

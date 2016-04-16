@@ -12,6 +12,7 @@ import net.minecraft.block.BlockReed;
 import net.minecraft.block.BlockStem;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
 import skygrid8.JsonHelper;
 import skygrid8.core.SkyGrid8;
@@ -24,6 +25,10 @@ public class GridRegistry
 	public static ArrayList<GridBlock> blocksOverworld = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksNether = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksEnd = new ArrayList<GridBlock>();
+	public static ArrayList<GridBlock> blocksAbyssalWasteland = new ArrayList<GridBlock>();
+	public static ArrayList<GridBlock> blocksDreadlands = new ArrayList<GridBlock>();
+	public static ArrayList<GridBlock> blocksOmothol = new ArrayList<GridBlock>();
+	public static ArrayList<GridBlock> blocksDarkRealm = new ArrayList<GridBlock>();
 	
 	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list)
 	{
@@ -121,6 +126,96 @@ public class GridRegistry
 		}
 		
 		SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksEnd.size() + " End grid blocks");
+
+		if(Loader.isModLoaded("abyssalcraft")){
+			f = new File("config/skygrid8_abyssal_wasteland.json");
+			blocksAbyssalWasteland = new ArrayList<GridBlock>();
+			
+			if(!f.exists())
+			{
+				generateDefaults(f, blocksAbyssalWasteland);
+			} else
+			{
+				JsonArray list = JsonHelper.ReadArrayFromFile(f);
+				for(JsonElement e : list)
+				{
+					if(e == null || !e.isJsonObject())
+					{
+						continue;
+					}
+					
+					blocksAbyssalWasteland.add(new GridBlock(e.getAsJsonObject()));
+				}
+			}
+			
+			SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksAbyssalWasteland.size() + " Abyssal Wasteland grid blocks");
+			
+			f = new File("config/skygrid8_dreadlands.json");
+			blocksDreadlands = new ArrayList<GridBlock>();
+			
+			if(!f.exists())
+			{
+				generateDefaults(f, blocksDreadlands);
+			} else
+			{
+				JsonArray list = JsonHelper.ReadArrayFromFile(f);
+				for(JsonElement e : list)
+				{
+					if(e == null || !e.isJsonObject())
+					{
+						continue;
+					}
+					
+					blocksDreadlands.add(new GridBlock(e.getAsJsonObject()));
+				}
+			}
+			
+			SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksDreadlands.size() + " Dreadlands grid blocks");
+			
+			f = new File("config/skygrid8_omothol.json");
+			blocksOmothol = new ArrayList<GridBlock>();
+			
+			if(!f.exists())
+			{
+				generateDefaults(f, blocksOmothol);
+			} else
+			{
+				JsonArray list = JsonHelper.ReadArrayFromFile(f);
+				for(JsonElement e : list)
+				{
+					if(e == null || !e.isJsonObject())
+					{
+						continue;
+					}
+					
+					blocksOmothol.add(new GridBlock(e.getAsJsonObject()));
+				}
+			}
+			
+			SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksOmothol.size() + " Omothol grid blocks");
+			
+			f = new File("config/skygrid8_dark_realm.json");
+			blocksDarkRealm = new ArrayList<GridBlock>();
+			
+			if(!f.exists())
+			{
+				generateDefaults(f, blocksDarkRealm);
+			} else
+			{
+				JsonArray list = JsonHelper.ReadArrayFromFile(f);
+				for(JsonElement e : list)
+				{
+					if(e == null || !e.isJsonObject())
+					{
+						continue;
+					}
+					
+					blocksDarkRealm.add(new GridBlock(e.getAsJsonObject()));
+				}
+			}
+			
+			SkyGrid8.logger.log(Level.INFO, "Loaded " + blocksDarkRealm.size() + " Dark Realm grid blocks");
+		}
 	}
 	
 	public static void saveBlocks()
@@ -151,6 +246,44 @@ public class GridRegistry
 			eList.add(j);
 		}
 		JsonHelper.WriteToFile(new File("config/skygrid8_end.json"), eList);
+
+		if(Loader.isModLoaded("abyssalcraft")){
+			JsonArray awList = new JsonArray();
+			for(GridBlock g : blocksAbyssalWasteland)
+			{
+				JsonObject j = new JsonObject();
+				g.writeToJson(j);
+				awList.add(j);
+			}
+			JsonHelper.WriteToFile(new File("config/skygrid8_abyssal_wasteland.json"), awList);
+
+			JsonArray dlList = new JsonArray();
+			for(GridBlock g : blocksDreadlands)
+			{
+				JsonObject j = new JsonObject();
+				g.writeToJson(j);
+				dlList.add(j);
+			}
+			JsonHelper.WriteToFile(new File("config/skygrid8_dreadlands.json"), dlList);
+
+			JsonArray omtList = new JsonArray();
+			for(GridBlock g : blocksOmothol)
+			{
+				JsonObject j = new JsonObject();
+				g.writeToJson(j);
+				omtList.add(j);
+			}
+			JsonHelper.WriteToFile(new File("config/skygrid8_omothol.json"), omtList);
+
+			JsonArray drList = new JsonArray();
+			for(GridBlock g : blocksDarkRealm)
+			{
+				JsonObject j = new JsonObject();
+				g.writeToJson(j);
+				drList.add(j);
+			}
+			JsonHelper.WriteToFile(new File("config/skygrid8_dark_realm.json"), drList);
+		}
 	}
 	
 	public static void generateDefaults(File f, ArrayList<GridBlock> blockList)
