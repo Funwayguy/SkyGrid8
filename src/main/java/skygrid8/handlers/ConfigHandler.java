@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
 import skygrid8.config.GridBlock;
 import skygrid8.config.GridRegistry;
@@ -34,6 +35,18 @@ public class ConfigHandler
 		SG_Settings.spawnN.addAll(Arrays.asList(config.getStringList("Spawners Nether", Configuration.CATEGORY_GENERAL, new String[] {"Blaze", "PigZombie", "LavaSlime"}, "Sets the possible spawner types in the grid")));
 		SG_Settings.spawnE = new ArrayList<String>();
 		SG_Settings.spawnE.addAll(Arrays.asList(config.getStringList("Spawners End", Configuration.CATEGORY_GENERAL, new String[] {"Enderman", "Endermite"}, "Sets the possible spawner types in the grid")));
+
+		if(Loader.isModLoaded("abyssalcraft")){
+			SG_Settings.spawnAW = new ArrayList<String>();
+			SG_Settings.spawnAW.addAll(Arrays.asList(config.getStringList("Spawners Abyssal Wasteland", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.depthsghoul", "abyssalcraft.abyssalzombie", "abyssalcraft.gskeleton", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
+			SG_Settings.spawnDL = new ArrayList<String>();
+			SG_Settings.spawnDL.addAll(Arrays.asList(config.getStringList("Spawners Dreadlands", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.dreadspawn", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
+			SG_Settings.spawnOMT = new ArrayList<String>();
+			SG_Settings.spawnOMT.addAll(Arrays.asList(config.getStringList("Spawners Abyssal Wasteland", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.remnant", "abyssalcraft.gatekeeperminion", "abyssalcraft.omotholghoul", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
+			SG_Settings.spawnDR = new ArrayList<String>();
+			SG_Settings.spawnDR.addAll(Arrays.asList(config.getStringList("Spawners Abyssal Wasteland", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.shadowcreature", "abyssalcraft.shadowmonster", "abyssalcraft.shadowbeast", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
+		}
+
 		GridRegistry.loadBlocks();
 		
 		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Overworld Grid Blocks")) // Legacy config

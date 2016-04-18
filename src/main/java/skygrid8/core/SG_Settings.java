@@ -14,4 +14,8 @@ public class SG_Settings
 	public static ArrayList<String> spawnO = new ArrayList<String>();
 	public static ArrayList<String> spawnN = new ArrayList<String>();
 	public static ArrayList<String> spawnE = new ArrayList<String>();
+	public static ArrayList<String> spawnAW = new ArrayList<String>();
+	public static ArrayList<String> spawnDL = new ArrayList<String>();
+	public static ArrayList<String> spawnOMT = new ArrayList<String>();
+	public static ArrayList<String> spawnDR = new ArrayList<String>();
 }
