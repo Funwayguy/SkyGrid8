@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.common.MinecraftForge;
 import skygrid8.core.SG_Settings;
 import skygrid8.core.SkyGrid8;
 
@@ -19,7 +19,7 @@ public class SGACPlugin implements IACPlugin {
 	@Override
 	public boolean canLoad() {
 
-		return Loader.isModLoaded(SkyGrid8.MODID);
+		return true;
 	}
 
 	@Override
@@ -49,6 +49,8 @@ public class SGACPlugin implements IACPlugin {
 
 		DimensionManager.unregisterDimension(AbyssalCraft.configDimId4);
 		DimensionManager.registerDimension(AbyssalCraft.configDimId4, DimensionType.register("The Dark Realm Grid", "_drgrid", AbyssalCraft.configDimId4, WorldProviderDarkRealmGrid.class, AbyssalCraft.keepLoaded4));
+
+		MinecraftForge.EVENT_BUS.register(new DarkRealmSpawnBlockHandler());
 
 		SkyGrid8.logger.info("... And they've become grids.");
 		ACLogger.info("Oh well, probably about time I change name to AbyssalGrid...");
