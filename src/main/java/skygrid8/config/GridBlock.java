@@ -5,10 +5,12 @@ import skygrid8.JsonHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.BiomeGenBase;
 
 public class GridBlock
 {
@@ -18,6 +20,7 @@ public class GridBlock
 	private IBlockState block;
 	
 	public ArrayList<GridPlant> plants = new ArrayList<GridPlant>();
+	public ArrayList<Integer> biomes = new ArrayList<Integer>();
 	
 	public GridBlock(JsonObject json)
 	{
@@ -100,6 +103,19 @@ public class GridBlock
 			pList.add(tmp);
 		}
 		json.add("plants", pList);
+		
+		JsonArray bList = new JsonArray();
+		for(int id : biomes)
+		{
+			BiomeGenBase b = BiomeGenBase.getBiome(id);
+			
+			if(b != null)
+			{
+				JsonPrimitive jp = new JsonPrimitive(BiomeGenBase.biomeRegistry.getNameForObject(b).toString());
+				bList.add(jp);
+			}
+		}
+		json.add("biomes", bList);
 	}
 	
 	public void readFromJson(JsonObject json)
@@ -120,6 +136,27 @@ public class GridBlock
 			String pn = JsonHelper.GetString(tmp, "block", "minecraft:stone");
 			int pm = JsonHelper.GetNumber(tmp, "meta", -1).intValue();
 			plants.add(new GridPlant(pn, pm));
+		}
+		
+		biomes = new ArrayList<Integer>();
+		for(JsonElement e : JsonHelper.GetArray(json, "biomes"))
+		{
+			if(e == null || !e.isJsonPrimitive())
+			{
+				continue;
+			}
+			
+			String bName = e.getAsString();
+			BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(new ResourceLocation(bName));
+			
+			if(b != null)
+			{
+				int bID = BiomeGenBase.getIdForBiome(b);
+				if(!biomes.contains(bID))
+				{
+					biomes.add(bID);
+				}
+			}
 		}
 	}
 	
