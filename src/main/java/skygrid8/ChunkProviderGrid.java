@@ -34,6 +34,7 @@ public class ChunkProviderGrid implements IChunkGenerator
 	@Override
 	public Chunk provideChunk(int x, int z)
 	{
+        BiomeGenBase[] abiomegenbase = this.worldObj.getBiomeProvider().loadBlockGeneratorData((BiomeGenBase[])null, x * 16, z * 16, 16, 16);
         ChunkPrimer chunkprimer = new ChunkPrimer();
         
         int spaceX = random.nextInt(Math.max(1, SG_Settings.dist + 1));
@@ -51,7 +52,8 @@ public class ChunkProviderGrid implements IChunkGenerator
             {
                 for (int k = 0; k < 16; ++k)
                 {
-                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.bedrock) : GridRegistry.getRandom(random, gridBlocks);
+                	BiomeGenBase biome = abiomegenbase[k << 4 | j];
+                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.bedrock) : GridRegistry.getRandom(random, gridBlocks, biome);
                     
                 	if((x*16 + j)%spaceX != 0 || (z*16 + k)%spaceZ != 0 || gb == null)
                 	{
@@ -80,17 +82,15 @@ public class ChunkProviderGrid implements IChunkGenerator
         {
         	chunkprimer.setBlockState(0, SG_Settings.height, 0, Blocks.bedrock.getDefaultState());
         }
-
-        Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
         
-        BiomeGenBase[] abiomegenbase = this.worldObj.getBiomeProvider().loadBlockGeneratorData((BiomeGenBase[])null, x * 16, z * 16, 16, 16);
+        Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
         byte[] abyte = chunk.getBiomeArray();
-
+        
         for (int l = 0; l < abyte.length; ++l)
         {
             abyte[l] = (byte)BiomeGenBase.getIdForBiome(abiomegenbase[l]);
         }
-
+        
         chunk.generateSkylightMap();
         return chunk;
 	}

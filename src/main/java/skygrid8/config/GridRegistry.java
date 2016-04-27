@@ -11,6 +11,7 @@ import net.minecraft.block.BlockNetherWart;
 import net.minecraft.block.BlockReed;
 import net.minecraft.block.BlockStem;
 import net.minecraft.init.Blocks;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
@@ -29,6 +30,31 @@ public class GridRegistry
 	public static ArrayList<GridBlock> blocksDreadlands = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksOmothol = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksDarkRealm = new ArrayList<GridBlock>();
+
+	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list, BiomeGenBase biome)
+	{
+		ArrayList<GridBlock> tmp = list;
+		
+		if(biome != null)
+		{
+			tmp = new ArrayList<GridBlock>();
+			
+			for(GridBlock gb : list)
+			{
+				if(gb == null)
+				{
+					continue;
+				}
+				
+				if(gb.biomes == null || gb.biomes.size() <= 0 || gb.biomes.contains(BiomeGenBase.getIdForBiome(biome)))
+				{
+					tmp.add(gb);
+				}
+			}
+		}
+		
+		return getRandom(rand, tmp);
+	}
 	
 	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list)
 	{
