@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.shinoow.abyssalcraft.AbyssalCraft;
+import com.shinoow.abyssalcraft.api.biome.ACBiomes;
 import com.shinoow.abyssalcraft.api.block.ACBlocks;
 
 public class WorldProviderOmotholGrid extends WorldProvider {
@@ -21,7 +22,7 @@ public class WorldProviderOmotholGrid extends WorldProvider {
 	@Override
 	public void registerWorldChunkManager()
 	{
-		worldChunkMgr = new BiomeProviderSingle(AbyssalCraft.omothol);
+		worldChunkMgr = new BiomeProviderSingle(ACBiomes.omothol);
 		setDimension(AbyssalCraft.configDimId3);
 		hasNoSky = true;
 	}

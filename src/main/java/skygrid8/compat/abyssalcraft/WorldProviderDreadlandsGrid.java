@@ -1,22 +1,21 @@
 package skygrid8.compat.abyssalcraft;
 
-import skygrid8.ChunkProviderGrid;
-import skygrid8.config.GridRegistry;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import skygrid8.ChunkProviderGrid;
+import skygrid8.config.GridRegistry;
 
 import com.shinoow.abyssalcraft.AbyssalCraft;
-import com.shinoow.abyssalcraft.common.world.WorldChunkManagerDreadlands;
 
 public class WorldProviderDreadlandsGrid extends WorldProvider {
 
 	@Override
 	public void registerWorldChunkManager() {
-		worldChunkMgr = new WorldChunkManagerDreadlands(worldObj.getSeed(), worldObj.getWorldInfo().getTerrainType());
+		worldChunkMgr = new BiomeProviderDreadlandsGrid(worldObj.getSeed(), worldObj.getWorldInfo().getTerrainType());
 		hasNoSky = true;
 		setDimension(AbyssalCraft.configDimId2);
 	}
