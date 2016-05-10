@@ -43,7 +43,7 @@ public class ConfigHandler
 			SG_Settings.spawnDL = new ArrayList<String>();
 			SG_Settings.spawnDL.addAll(Arrays.asList(config.getStringList("Spawners Dreadlands", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.dreadspawn", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
 			SG_Settings.spawnOMT = new ArrayList<String>();
-			SG_Settings.spawnOMT.addAll(Arrays.asList(config.getStringList("Spawners Omothol", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.remnant", "abyssalcraft.gatekeeperminion", "abyssalcraft.omotholghoul", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
+			SG_Settings.spawnOMT.addAll(Arrays.asList(config.getStringList("Spawners Omothol", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.remnant", "abyssalcraft.jzaharminion", "abyssalcraft.omotholghoul", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
 			SG_Settings.spawnDR = new ArrayList<String>();
 			SG_Settings.spawnDR.addAll(Arrays.asList(config.getStringList("Spawners Dark Realm", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft.shadowcreature", "abyssalcraft.shadowmonster", "abyssalcraft.shadowbeast", "abyssalcraft.lessershoggoth"}, "Sets ths possible spawner types in the grid")));
 		}
