@@ -29,6 +29,7 @@ public class ConfigHandler
 		SG_Settings.dist = config.getInt("Grid Spacing", Configuration.CATEGORY_GENERAL, 3, 0, 15, "How much open space should there be between blocks") + 1;
 		SG_Settings.populate = config.getBoolean("Natural Populate", Configuration.CATEGORY_GENERAL, false, "Naturally populate the grid with trees and plants");
 		SG_Settings.rngSpacing = config.getBoolean("Random Spacing", Configuration.CATEGORY_GENERAL, false, "Randomise the spacing between 1 and the configured value (per chunk)");
+		SG_Settings.oldRegen = config.getBoolean("Old Regen", Configuration.CATEGORY_CLIENT, true, "Use the old health regen speed at full hunger (easier to navigate grids)");
 		SG_Settings.spawnO = new ArrayList<String>();
 		SG_Settings.spawnO.addAll(Arrays.asList(config.getStringList("Spawners Overworld", Configuration.CATEGORY_GENERAL, new String[] {"Skeleton", "Zombie", "Spider", "CaveSpider"}, "Sets the possible spawner types in the grid")));
 		SG_Settings.spawnN = new ArrayList<String>();

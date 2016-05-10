@@ -11,6 +11,7 @@ public class SG_Settings
 	public static boolean populate = false;
 	public static int height = 128;
 	public static int dist = 4;
+	public static boolean oldRegen = true;
 	public static ArrayList<String> spawnO = new ArrayList<String>();
 	public static ArrayList<String> spawnN = new ArrayList<String>();
 	public static ArrayList<String> spawnE = new ArrayList<String>();
