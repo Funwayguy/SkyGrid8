@@ -18,7 +18,7 @@ public class WorldProviderNetherGrid extends WorldProvider
      */
     public void registerWorldChunkManager()
     {
-        this.worldChunkMgr = new BiomeProviderSingle(Biomes.hell);
+        this.biomeProvider = new BiomeProviderSingle(Biomes.HELL);
         this.isHellWorld = true;
         this.hasNoSky = true;
     }

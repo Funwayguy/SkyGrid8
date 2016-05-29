@@ -9,8 +9,8 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkGenerator;
@@ -34,7 +34,7 @@ public class ChunkProviderGrid implements IChunkGenerator
 	@Override
 	public Chunk provideChunk(int x, int z)
 	{
-        BiomeGenBase[] abiomegenbase = this.worldObj.getBiomeProvider().loadBlockGeneratorData((BiomeGenBase[])null, x * 16, z * 16, 16, 16);
+        Biome[] abiomegenbase = this.worldObj.getBiomeProvider().loadBlockGeneratorData((Biome[])null, x * 16, z * 16, 16, 16);
         ChunkPrimer chunkprimer = new ChunkPrimer();
         
         int spaceX = random.nextInt(Math.max(1, SG_Settings.dist + 1));
@@ -52,12 +52,12 @@ public class ChunkProviderGrid implements IChunkGenerator
             {
                 for (int k = 0; k < 16; ++k)
                 {
-                	BiomeGenBase biome = abiomegenbase[k << 4 | j];
-                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.bedrock) : GridRegistry.getRandom(random, gridBlocks, biome);
+                	Biome biome = abiomegenbase[k << 4 | j];
+                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.BEDROCK) : GridRegistry.getRandom(random, gridBlocks, biome);
                     
                 	if((x*16 + j)%spaceX != 0 || (z*16 + k)%spaceZ != 0 || gb == null)
                 	{
-                		chunkprimer.setBlockState(j, i, k, Blocks.air.getDefaultState());
+                		chunkprimer.setBlockState(j, i, k, Blocks.AIR.getDefaultState());
                 	} else
                 	{
                 		chunkprimer.setBlockState(j, i, k, gb.getState());
@@ -80,7 +80,7 @@ public class ChunkProviderGrid implements IChunkGenerator
         
         if(x == 0 && z == 0)
         {
-        	chunkprimer.setBlockState(0, SG_Settings.height, 0, Blocks.bedrock.getDefaultState());
+        	chunkprimer.setBlockState(0, SG_Settings.height, 0, Blocks.BEDROCK.getDefaultState());
         }
         
         Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
@@ -88,7 +88,7 @@ public class ChunkProviderGrid implements IChunkGenerator
         
         for (int l = 0; l < abyte.length; ++l)
         {
-            abyte[l] = (byte)BiomeGenBase.getIdForBiome(abiomegenbase[l]);
+            abyte[l] = (byte)Biome.getIdForBiome(abiomegenbase[l]);
         }
         
         chunk.generateSkylightMap();
@@ -106,7 +106,7 @@ public class ChunkProviderGrid implements IChunkGenerator
         int i = p_73153_2_ * 16;
         int j = p_73153_3_ * 16;
         BlockPos blockpos = new BlockPos(i, 0, j);
-        BiomeGenBase biomegenbase = this.worldObj.getBiomeGenForCoords(new BlockPos(i + 16, 0, j + 16));
+        Biome biomegenbase = this.worldObj.getBiomeGenForCoords(new BlockPos(i + 16, 0, j + 16));
         
         biomegenbase.decorate(this.worldObj, this.random, blockpos);
 	}
@@ -120,7 +120,7 @@ public class ChunkProviderGrid implements IChunkGenerator
 	@Override
 	public List<SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos)
 	{
-        BiomeGenBase biomegenbase = this.worldObj.getBiomeGenForCoords(pos);
+        Biome biomegenbase = this.worldObj.getBiomeGenForCoords(pos);
         return biomegenbase.getSpawnableList(creatureType);
 	}
 	

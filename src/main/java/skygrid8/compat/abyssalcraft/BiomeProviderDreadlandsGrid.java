@@ -3,19 +3,16 @@ package skygrid8.compat.abyssalcraft;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeCache;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.IntCache;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.shinoow.abyssalcraft.api.biome.ACBiomes;
 
 public class BiomeProviderDreadlandsGrid extends BiomeProvider
 {
@@ -23,12 +20,12 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 	private GenLayer biomeToUse;
 	private GenLayer biomeIndexLayer;
 	private BiomeCache biomeCache;
-	private List<BiomeGenBase> biomesToSpawnIn;
+	private List<Biome> biomesToSpawnIn;
 
 	public BiomeProviderDreadlandsGrid()
 	{
 		biomeCache = new BiomeCache(this);
-		biomesToSpawnIn = new ArrayList<BiomeGenBase>();
+		biomesToSpawnIn = new ArrayList<Biome>();
 		biomesToSpawnIn.add(ACBiomes.dreadlands);
 		biomesToSpawnIn.add(ACBiomes.purified_dreadlands);
 		biomesToSpawnIn.add(ACBiomes.dreadlands_forest);
@@ -49,21 +46,21 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 	}
 
 	@Override
-	public List<BiomeGenBase> getBiomesToSpawnIn()
+	public List<Biome> getBiomesToSpawnIn()
 	{
 		return biomesToSpawnIn;
 	}
 
 	@Override
-	public BiomeGenBase getBiomeGenerator(BlockPos pos)
+	public Biome getBiomeGenerator(BlockPos pos)
 	{
-		return this.getBiomeGenerator(pos, (BiomeGenBase)null);
+		return this.getBiomeGenerator(pos, (Biome)null);
 	}
 
 	@Override
-	public BiomeGenBase getBiomeGenerator(BlockPos pos, BiomeGenBase biomegen)
+	public Biome getBiomeGenerator(BlockPos pos, Biome biomegen)
 	{
-		BiomeGenBase biome = biomeCache.func_180284_a(pos.getX(), pos.getZ(), biomegen);
+		Biome biome = biomeCache.getBiome(pos.getX(), pos.getZ(), biomegen);
 		if (biome == null)
 			return ACBiomes.dreadlands;
 
@@ -106,7 +103,7 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 		int[] aint = biomeIndexLayer.getInts(par2, par3, par4, par5);
 
 		for (int i1 = 0; i1 < par4 * par5; ++i1) {
-			float f = BiomeGenBase.getBiome(aint[i1]).getTemperature() / 65536.0F; //getIntTemperature()
+			float f = Biome.getBiome(aint[i1]).getTemperature() / 65536.0F; //getIntTemperature()
 
 			if (f > 1.0F)
 				f = 1.0F;
@@ -118,16 +115,16 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 	}
 
 	@Override
-	public BiomeGenBase[] getBiomesForGeneration(BiomeGenBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5)
+	public Biome[] getBiomesForGeneration(Biome[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5)
 	{
 		if (par1ArrayOfBiomeGenBase == null || par1ArrayOfBiomeGenBase.length < par4 * par5)
-			par1ArrayOfBiomeGenBase = new BiomeGenBase[par4 * par5];
+			par1ArrayOfBiomeGenBase = new Biome[par4 * par5];
 
 		int[] aint = biomeToUse.getInts(par2, par3, par4, par5);
 
 		for (int i = 0; i < par4 * par5; ++i)
 			if (aint[i] >= 0)
-				par1ArrayOfBiomeGenBase[i] = BiomeGenBase.getBiome(aint[i]);
+				par1ArrayOfBiomeGenBase[i] = Biome.getBiome(aint[i]);
 			else
 				par1ArrayOfBiomeGenBase[i] = ACBiomes.dreadlands;
 
@@ -135,21 +132,21 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 	}
 
 	@Override
-	public BiomeGenBase[] loadBlockGeneratorData(BiomeGenBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5)
+	public Biome[] loadBlockGeneratorData(Biome[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5)
 	{
 		return getBiomeGenAt(par1ArrayOfBiomeGenBase, par2, par3, par4, par5, true);
 	}
 
 	@Override
-	public BiomeGenBase[] getBiomeGenAt(BiomeGenBase[] par1ArrayOfBiomeGenBase, int x, int y, int width, int length, boolean cacheFlag)
+	public Biome[] getBiomeGenAt(Biome[] par1ArrayOfBiomeGenBase, int x, int y, int width, int length, boolean cacheFlag)
 	{
 		IntCache.resetIntCache();
 
 		if (par1ArrayOfBiomeGenBase == null || par1ArrayOfBiomeGenBase.length < width * length)
-			par1ArrayOfBiomeGenBase = new BiomeGenBase[width * length];
+			par1ArrayOfBiomeGenBase = new Biome[width * length];
 
 		if (cacheFlag && width == 16 && length == 16 && (x & 15) == 0 && (y & 15) == 0) {
-			BiomeGenBase[] abiomegenbase1 = biomeCache.getCachedBiomes(x, y);
+			Biome[] abiomegenbase1 = biomeCache.getCachedBiomes(x, y);
 			System.arraycopy(abiomegenbase1, 0, par1ArrayOfBiomeGenBase, 0, width * length);
 			return par1ArrayOfBiomeGenBase;
 		} else {
@@ -157,7 +154,7 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 
 			for (int i = 0; i < width * length; ++i)
 				if (aint[i] >= 0)
-					par1ArrayOfBiomeGenBase[i] = BiomeGenBase.getBiome(aint[i]);
+					par1ArrayOfBiomeGenBase[i] = Biome.getBiome(aint[i]);
 				else
 					par1ArrayOfBiomeGenBase[i] = ACBiomes.dreadlands;
 
@@ -178,7 +175,7 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 		int[] aint = biomeToUse.getInts(l, i1, l1, i2);
 
 		for (int j2 = 0; j2 < l1 * i2; ++j2) {
-			BiomeGenBase biomegenbase = BiomeGenBase.getBiome(aint[j2]);
+			Biome biomegenbase = Biome.getBiome(aint[j2]);
 
 			if (!par4List.contains(biomegenbase))
 				return false;
@@ -204,7 +201,7 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 		for (int k2 = 0; k2 < l1 * i2; ++k2) {
 			int l2 = l + k2 % l1 << 2;
 			int i3 = i1 + k2 / l1 << 2;
-			BiomeGenBase biomegenbase = BiomeGenBase.getBiome(aint[k2]);
+			Biome biomegenbase = Biome.getBiome(aint[k2]);
 
 			if (par4List.contains(biomegenbase) && (blockpos == null || par5Random.nextInt(j2 + 1) == 0)) {
 				blockpos = new BlockPos(l2, 0, i3);

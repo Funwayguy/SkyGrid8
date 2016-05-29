@@ -20,7 +20,7 @@ public class WorldProviderEndGrid extends WorldProvider
      */
     public void registerWorldChunkManager()
     {
-        this.worldChunkMgr = new BiomeProviderSingle(Biomes.sky);
+        this.biomeProvider = new BiomeProviderSingle(Biomes.SKY);
         this.hasNoSky = true;
     }
 

@@ -1,7 +1,5 @@
 package skygrid8.compat.abyssalcraft;
 
-import skygrid8.ChunkProviderGrid;
-import skygrid8.config.GridRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
@@ -11,9 +9,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.shinoow.abyssalcraft.AbyssalCraft;
-import com.shinoow.abyssalcraft.api.biome.ACBiomes;
+import skygrid8.ChunkProviderGrid;
+import skygrid8.config.GridRegistry;
 
 public class WorldProviderAbyssalWastelandGrid extends WorldProvider {
 
@@ -24,7 +21,7 @@ public class WorldProviderAbyssalWastelandGrid extends WorldProvider {
 
 	@Override
 	public void registerWorldChunkManager() {
-		worldChunkMgr = new BiomeProviderSingle(ACBiomes.abyssal_wastelands);
+		biomeProvider = new BiomeProviderSingle(ACBiomes.abyssal_wastelands);
 		isHellWorld= false;
 		setDimension(AbyssalCraft.configDimId1);
 		hasNoSky = true;

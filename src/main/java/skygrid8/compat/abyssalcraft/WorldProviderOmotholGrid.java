@@ -22,7 +22,7 @@ public class WorldProviderOmotholGrid extends WorldProvider {
 	@Override
 	public void registerWorldChunkManager()
 	{
-		worldChunkMgr = new BiomeProviderSingle(ACBiomes.omothol);
+		biomeProvider = new BiomeProviderSingle(ACBiomes.omothol);
 		setDimension(AbyssalCraft.configDimId3);
 		hasNoSky = true;
 	}

@@ -4,8 +4,6 @@ import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.GenLayerVoronoiZoom;
 import net.minecraft.world.gen.layer.GenLayerZoom;
 
-import com.shinoow.abyssalcraft.common.world.gen.layer.GenLayerBiomesDL;
-
 public abstract class GenLayerDL extends GenLayer
 {
 	public GenLayerDL(long seed) {

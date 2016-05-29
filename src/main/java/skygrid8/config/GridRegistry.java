@@ -11,7 +11,7 @@ import net.minecraft.block.BlockNetherWart;
 import net.minecraft.block.BlockReed;
 import net.minecraft.block.BlockStem;
 import net.minecraft.init.Blocks;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
@@ -31,7 +31,7 @@ public class GridRegistry
 	public static ArrayList<GridBlock> blocksOmothol = new ArrayList<GridBlock>();
 	public static ArrayList<GridBlock> blocksDarkRealm = new ArrayList<GridBlock>();
 
-	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list, BiomeGenBase biome)
+	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list, Biome biome)
 	{
 		ArrayList<GridBlock> tmp = list;
 		
@@ -46,7 +46,7 @@ public class GridRegistry
 					continue;
 				}
 				
-				if(gb.biomes == null || gb.biomes.size() <= 0 || gb.biomes.contains(BiomeGenBase.getIdForBiome(biome)))
+				if(gb.biomes == null || gb.biomes.size() <= 0 || gb.biomes.contains(Biome.getIdForBiome(biome)))
 				{
 					tmp.add(gb);
 				}
@@ -71,7 +71,7 @@ public class GridRegistry
 			}
 		}
 		
-		return new GridBlock(Blocks.bedrock);
+		return new GridBlock(Blocks.BEDROCK);
 	}
 	
 	public static int getTotalWeight(ArrayList<GridBlock> list)
@@ -314,35 +314,35 @@ public class GridRegistry
 	
 	public static void generateDefaults(File f, ArrayList<GridBlock> blockList)
 	{
-		GridBlock farmland = new GridBlock(Blocks.farmland);
-		GridBlock soulsand = new GridBlock(Blocks.soul_sand);
-		GridBlock plainsand = new GridBlock(Blocks.sand);
-		GridBlock grass = new GridBlock(Blocks.grass);
+		GridBlock farmland = new GridBlock(Blocks.FARMLAND);
+		GridBlock soulsand = new GridBlock(Blocks.SOUL_SAND);
+		GridBlock plainsand = new GridBlock(Blocks.SAND);
+		GridBlock grass = new GridBlock(Blocks.GRASS);
 		
 		JsonArray list = new JsonArray();
-		for(Block b : Block.blockRegistry)
+		for(Block b : Block.REGISTRY)
 		{
-			if(b == Blocks.grass)
+			if(b == Blocks.GRASS)
 			{
 				grass = new GridBlock(b);
 				blockList.add(grass);
 				continue;
-			} else if(b == Blocks.sand)
+			} else if(b == Blocks.SAND)
 			{
 				plainsand = new GridBlock(b);
 				blockList.add(plainsand);
 				continue;
-			} else if(b == Blocks.soul_sand)
+			} else if(b == Blocks.SOUL_SAND)
 			{
 				soulsand = new GridBlock(b); // Written to list when plants have been added
 				blockList.add(soulsand);
 				continue;
-			} else if(b == Blocks.farmland)
+			} else if(b == Blocks.FARMLAND)
 			{
 				farmland = new GridBlock(b); // Written to list when plants have been added
 				blockList.add(farmland);
 				continue;
-			} else if(b instanceof BlockDynamicLiquid || (!b.isFullCube(b.getDefaultState()) && b != Blocks.chest))
+			} else if(b instanceof BlockDynamicLiquid || (!b.isFullCube(b.getDefaultState()) && b != Blocks.CHEST))
 			{
 				continue;
 			}
@@ -354,7 +354,7 @@ public class GridRegistry
 			blockList.add(tmp);
 		}
 		
-		for(Block b : Block.blockRegistry)
+		for(Block b : Block.REGISTRY)
 		{
 			if(b instanceof BlockCrops || b instanceof BlockStem)
 			{

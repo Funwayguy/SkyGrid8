@@ -9,13 +9,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import skygrid8.ChunkProviderGrid;
 import skygrid8.config.GridRegistry;
 
-import com.shinoow.abyssalcraft.AbyssalCraft;
-
 public class WorldProviderDreadlandsGrid extends WorldProvider {
 
 	@Override
 	public void registerWorldChunkManager() {
-		worldChunkMgr = new BiomeProviderDreadlandsGrid(worldObj.getSeed(), worldObj.getWorldInfo().getTerrainType());
+		biomeProvider = new BiomeProviderDreadlandsGrid(worldObj.getSeed(), worldObj.getWorldInfo().getTerrainType());
 		hasNoSky = true;
 		setDimension(AbyssalCraft.configDimId2);
 	}

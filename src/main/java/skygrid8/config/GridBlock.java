@@ -1,16 +1,16 @@
 package skygrid8.config;
 
 import java.util.ArrayList;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
 import skygrid8.JsonHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.BiomeGenBase;
 
 public class GridBlock
 {
@@ -85,7 +85,7 @@ public class GridBlock
 			}
 		}
 		
-		return block != null? block : Blocks.stone.getDefaultState();
+		return block != null? block : Blocks.STONE.getDefaultState();
 	}
 	
 	public void writeToJson(JsonObject json)
@@ -107,11 +107,11 @@ public class GridBlock
 		JsonArray bList = new JsonArray();
 		for(int id : biomes)
 		{
-			BiomeGenBase b = BiomeGenBase.getBiome(id);
+			Biome b = Biome.getBiome(id);
 			
 			if(b != null)
 			{
-				JsonPrimitive jp = new JsonPrimitive(BiomeGenBase.biomeRegistry.getNameForObject(b).toString());
+				JsonPrimitive jp = new JsonPrimitive(Biome.REGISTRY.getNameForObject(b).toString());
 				bList.add(jp);
 			}
 		}
@@ -147,11 +147,11 @@ public class GridBlock
 			}
 			
 			String bName = e.getAsString();
-			BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(new ResourceLocation(bName));
+			Biome b = Biome.REGISTRY.getObject(new ResourceLocation(bName));
 			
 			if(b != null)
 			{
-				int bID = BiomeGenBase.getIdForBiome(b);
+				int bID = Biome.getIdForBiome(b);
 				if(!biomes.contains(bID))
 				{
 					biomes.add(bID);
@@ -170,7 +170,7 @@ public class GridBlock
 		}
 		
 		ResourceLocation blockRes = new ResourceLocation(parts[0], parts[1]);
-		Block b = Block.blockRegistry.getObject(blockRes);
+		Block b = Block.REGISTRY.getObject(blockRes);
 		
 		if(b == null)
 		{
@@ -199,7 +199,7 @@ public class GridBlock
 		{
 			this.block = block;
 			meta = block.getBlock().getMetaFromState(block);
-			name = Block.blockRegistry.getNameForObject(block.getBlock()).toString();
+			name = Block.REGISTRY.getNameForObject(block.getBlock()).toString();
 		}
 		
 		public GridPlant(String name, int meta)
@@ -220,7 +220,7 @@ public class GridBlock
 				}
 			}
 			
-			return block != null? block : Blocks.stone.getDefaultState();
+			return block != null? block : Blocks.STONE.getDefaultState();
 		}
 	}
 }
