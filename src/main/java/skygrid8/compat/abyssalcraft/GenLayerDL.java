@@ -1,5 +1,7 @@
 package skygrid8.compat.abyssalcraft;
 
+import com.shinoow.abyssalcraft.common.world.gen.layer.GenLayerBiomesDL;
+
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.GenLayerVoronoiZoom;
 import net.minecraft.world.gen.layer.GenLayerZoom;

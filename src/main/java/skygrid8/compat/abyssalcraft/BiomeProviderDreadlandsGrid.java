@@ -3,6 +3,9 @@ package skygrid8.compat.abyssalcraft;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import com.shinoow.abyssalcraft.api.biome.ACBiomes;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;

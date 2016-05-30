@@ -20,7 +20,7 @@ import com.shinoow.abyssalcraft.api.block.ACBlocks;
 public class WorldProviderOmotholGrid extends WorldProvider {
 
 	@Override
-	public void registerWorldChunkManager()
+	public void createBiomeProvider()
 	{
 		biomeProvider = new BiomeProviderSingle(ACBiomes.omothol);
 		setDimension(AbyssalCraft.configDimId3);

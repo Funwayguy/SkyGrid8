@@ -1,5 +1,7 @@
 package skygrid8.compat.abyssalcraft;
 
+import com.shinoow.abyssalcraft.AbyssalCraft;
+
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
@@ -12,7 +14,7 @@ import skygrid8.config.GridRegistry;
 public class WorldProviderDreadlandsGrid extends WorldProvider {
 
 	@Override
-	public void registerWorldChunkManager() {
+	public void createBiomeProvider() {
 		biomeProvider = new BiomeProviderDreadlandsGrid(worldObj.getSeed(), worldObj.getWorldInfo().getTerrainType());
 		hasNoSky = true;
 		setDimension(AbyssalCraft.configDimId2);

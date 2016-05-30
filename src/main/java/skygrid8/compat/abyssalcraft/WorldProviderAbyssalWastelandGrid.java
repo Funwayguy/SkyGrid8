@@ -1,5 +1,8 @@
 package skygrid8.compat.abyssalcraft;
 
+import com.shinoow.abyssalcraft.AbyssalCraft;
+import com.shinoow.abyssalcraft.api.biome.ACBiomes;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
@@ -20,7 +23,7 @@ public class WorldProviderAbyssalWastelandGrid extends WorldProvider {
 	}
 
 	@Override
-	public void registerWorldChunkManager() {
+	public void createBiomeProvider() {
 		biomeProvider = new BiomeProviderSingle(ACBiomes.abyssal_wastelands);
 		isHellWorld= false;
 		setDimension(AbyssalCraft.configDimId1);
