@@ -19,7 +19,7 @@ archivesBaseName = "SkyGrid8"
 
 minecraft {
     version = "1.9.4-12.17.0.1921-1.9.4"
-    runDir = "run"
+    mappings = "snapshot_20160518"
 }
 
 dependencies {
