@@ -12,6 +12,7 @@ public class WorldProviderOverworldGrid extends WorldProvider
     /**
      * Returns a new chunk provider which generates chunks for this world
      */
+	@Override
     public IChunkGenerator createChunkGenerator()
     {
     	return new ChunkProviderGrid(this.worldObj, this.getSeed(), GridRegistry.blocksOverworld);
@@ -54,6 +55,7 @@ public class WorldProviderOverworldGrid extends WorldProvider
      * Called to determine if the chunk at the given chunk coordinates within the provider's world can be dropped. Used
      * in WorldProviderSurface to prevent spawn chunks from being unloaded.
      */
+	@Override
     public boolean canDropChunk(int x, int z)
     {
         return !this.worldObj.isSpawnChunk(x, z) || !this.worldObj.provider.getDimensionType().shouldLoadSpawn();

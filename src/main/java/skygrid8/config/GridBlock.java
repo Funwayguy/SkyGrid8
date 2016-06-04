@@ -30,6 +30,8 @@ public class GridBlock
 	public GridBlock(IBlockState state)
 	{
 		this.block = state;
+		this.meta = state.getBlock().getMetaFromState(state);
+		this.name = state.getBlock().getRegistryName().toString();
 	}
 	
 	public GridBlock(Block b)
@@ -199,7 +201,7 @@ public class GridBlock
 		{
 			this.block = block;
 			meta = block.getBlock().getMetaFromState(block);
-			name = Block.REGISTRY.getNameForObject(block.getBlock()).toString();
+			name = block.getBlock().getRegistryName().toString();
 		}
 		
 		public GridPlant(String name, int meta)

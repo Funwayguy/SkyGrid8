@@ -18,12 +18,14 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * creates a new world chunk manager for WorldProvider
      */
-    public void registerWorldChunkManager()
+	@Override
+    public void createBiomeProvider()
     {
         this.biomeProvider = new BiomeProviderSingle(Biomes.SKY);
         this.hasNoSky = true;
     }
-
+	
+	@Override
     public IChunkGenerator createChunkGenerator()
     {
         return new ChunkProviderGrid(this.worldObj, this.worldObj.getSeed(), GridRegistry.blocksEnd);
@@ -32,6 +34,7 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * Calculates the angle of sun and moon in the sky relative to a specified time (usually worldTime)
      */
+    @Override
     public float calculateCelestialAngle(long worldTime, float partialTicks)
     {
         return 0.0F;
@@ -40,6 +43,7 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * Returns array with sunrise/sunset colors
      */
+    @Override
     @SideOnly(Side.CLIENT)
     public float[] calcSunriseSunsetColors(float celestialAngle, float partialTicks)
     {
@@ -49,6 +53,7 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * Return Vec3D with biome specific fog color
      */
+    @Override
     @SideOnly(Side.CLIENT)
     public Vec3d getFogColor(float p_76562_1_, float p_76562_2_)
     {
@@ -63,7 +68,8 @@ public class WorldProviderEndGrid extends WorldProvider
         f3 = f3 * (f * 0.0F + 0.15F);
         return new Vec3d((double)f1, (double)f2, (double)f3);
     }
-
+    
+    @Override
     @SideOnly(Side.CLIENT)
     public boolean isSkyColored()
     {
@@ -73,6 +79,7 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * True if the player can respawn in this dimension (true = overworld, false = nether).
      */
+    @Override
     public boolean canRespawnHere()
     {
         return false;
@@ -81,6 +88,7 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * Returns 'true' if in the "main surface world", but 'false' if in the Nether or End dimensions.
      */
+    @Override
     public boolean isSurfaceWorld()
     {
         return false;
@@ -89,6 +97,7 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * the y level at which clouds are rendered.
      */
+    @Override
     @SideOnly(Side.CLIENT)
     public float getCloudHeight()
     {
@@ -98,16 +107,19 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * Will check if the x, z position specified is alright to be set as the map spawn point
      */
+    @Override
     public boolean canCoordinateBeSpawn(int x, int z)
     {
         return this.worldObj.getGroundAboveSeaLevel(new BlockPos(x, 0, z)).getMaterial().blocksMovement();
     }
-
+    
+    @Override
     public BlockPos getSpawnCoordinate()
     {
         return new BlockPos(100, SG_Settings.height + 1, 0);
     }
-
+    
+    @Override
     public int getAverageGroundLevel()
     {
         return SG_Settings.height;
@@ -116,12 +128,14 @@ public class WorldProviderEndGrid extends WorldProvider
     /**
      * Returns true if the given X,Z coordinate should show environmental fog.
      */
+    @Override
     @SideOnly(Side.CLIENT)
     public boolean doesXZShowFog(int x, int z)
     {
         return false;
     }
-
+    
+    @Override
     public DimensionType getDimensionType()
     {
         return DimensionType.THE_END;

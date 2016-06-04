@@ -16,7 +16,8 @@ public class WorldProviderNetherGrid extends WorldProvider
     /**
      * creates a new world chunk manager for WorldProvider
      */
-    public void registerWorldChunkManager()
+	@Override
+    public void createBiomeProvider()
     {
         this.biomeProvider = new BiomeProviderSingle(Biomes.HELL);
         this.isHellWorld = true;
@@ -45,7 +46,8 @@ public class WorldProviderNetherGrid extends WorldProvider
             this.lightBrightnessTable[i] = (1.0F - f1) / (f1 * 3.0F + 1.0F) * (1.0F - f) + f;
         }
     }
-
+    
+    @Override
     public IChunkGenerator createChunkGenerator()
     {
         return new ChunkProviderGrid(this.worldObj, this.worldObj.getSeed(), GridRegistry.blocksNether);
@@ -54,6 +56,7 @@ public class WorldProviderNetherGrid extends WorldProvider
     /**
      * Returns 'true' if in the "main surface world", but 'false' if in the Nether or End dimensions.
      */
+    @Override
     public boolean isSurfaceWorld()
     {
         return false;
@@ -62,6 +65,7 @@ public class WorldProviderNetherGrid extends WorldProvider
     /**
      * Will check if the x, z position specified is alright to be set as the map spawn point
      */
+    @Override
     public boolean canCoordinateBeSpawn(int x, int z)
     {
         return false;
@@ -70,6 +74,7 @@ public class WorldProviderNetherGrid extends WorldProvider
     /**
      * Calculates the angle of sun and moon in the sky relative to a specified time (usually worldTime)
      */
+    @Override
     public float calculateCelestialAngle(long worldTime, float partialTicks)
     {
         return 0.5F;
@@ -78,6 +83,7 @@ public class WorldProviderNetherGrid extends WorldProvider
     /**
      * True if the player can respawn in this dimension (true = overworld, false = nether).
      */
+    @Override
     public boolean canRespawnHere()
     {
         return false;
@@ -86,13 +92,15 @@ public class WorldProviderNetherGrid extends WorldProvider
     /**
      * Returns true if the given X,Z coordinate should show environmental fog.
      */
+    @Override
     @SideOnly(Side.CLIENT)
     public boolean doesXZShowFog(int x, int z)
     {
         return true;
     }
-
-    public WorldBorder getWorldBorder()
+    
+    @Override
+    public WorldBorder createWorldBorder()
     {
         return new WorldBorder()
         {
@@ -106,7 +114,8 @@ public class WorldProviderNetherGrid extends WorldProvider
             }
         };
     }
-
+    
+    @Override
     public DimensionType getDimensionType()
     {
         return DimensionType.NETHER;
