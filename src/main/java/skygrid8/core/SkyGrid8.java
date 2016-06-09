@@ -14,12 +14,12 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
-import skygrid8.PostGenerator;
-import skygrid8.WorldProviderEndGrid;
-import skygrid8.WorldProviderNetherGrid;
-import skygrid8.WorldProviderOverworldGrid;
 import skygrid8.core.proxies.CommonProxy;
 import skygrid8.handlers.ConfigHandler;
+import skygrid8.world.PostGenerator;
+import skygrid8.world.WorldProviderEndGrid;
+import skygrid8.world.WorldProviderNetherGrid;
+import skygrid8.world.WorldProviderOverworldGrid;
 
 @Mod(modid = SkyGrid8.MODID, version = SkyGrid8.VERSION, name = SkyGrid8.NAME, guiFactory = "skygrid8.handlers.ConfigGuiFactory")
 public class SkyGrid8

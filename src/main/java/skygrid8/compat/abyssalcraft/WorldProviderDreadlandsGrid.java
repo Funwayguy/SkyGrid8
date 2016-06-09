@@ -1,15 +1,14 @@
 package skygrid8.compat.abyssalcraft;
 
 import com.shinoow.abyssalcraft.AbyssalCraft;
-
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import skygrid8.ChunkProviderGrid;
 import skygrid8.config.GridRegistry;
+import skygrid8.world.ChunkProviderGrid;
 
 public class WorldProviderDreadlandsGrid extends WorldProvider {
 

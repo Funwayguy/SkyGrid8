@@ -2,7 +2,6 @@ package skygrid8.compat.abyssalcraft;
 
 import com.shinoow.abyssalcraft.AbyssalCraft;
 import com.shinoow.abyssalcraft.api.biome.ACBiomes;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
@@ -12,8 +11,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import skygrid8.ChunkProviderGrid;
 import skygrid8.config.GridRegistry;
+import skygrid8.world.ChunkProviderGrid;
 
 public class WorldProviderAbyssalWastelandGrid extends WorldProvider {
 

@@ -6,7 +6,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockDynamicLiquid;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockNetherWart;
 import net.minecraft.block.BlockReed;
 import net.minecraft.block.BlockStem;
@@ -15,8 +15,8 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
-import skygrid8.JsonHelper;
 import skygrid8.core.SkyGrid8;
+import skygrid8.util.JsonHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -342,7 +342,7 @@ public class GridRegistry
 				farmland = new GridBlock(b); // Written to list when plants have been added
 				blockList.add(farmland);
 				continue;
-			} else if(b instanceof BlockDynamicLiquid || (!b.isFullCube(b.getDefaultState()) && b != Blocks.CHEST))
+			} else if(b instanceof BlockLiquid || (!b.getDefaultState().isFullCube() && b != Blocks.CHEST))
 			{
 				continue;
 			}

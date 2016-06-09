@@ -1,4 +1,4 @@
-package skygrid8;
+package skygrid8.world;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;

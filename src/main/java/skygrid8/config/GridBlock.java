@@ -6,7 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import skygrid8.JsonHelper;
+import skygrid8.util.JsonHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -39,6 +39,7 @@ public class GridBlock
 		this(b.getDefaultState());
 	}
 	
+	@SuppressWarnings("deprecation")
 	public GridBlock(Block b, int meta)
 	{
 		this(b.getStateFromMeta(meta));
@@ -60,6 +61,7 @@ public class GridBlock
 		addPlant(b.getDefaultState());
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void addPlant(Block b, int meta)
 	{
 		addPlant(b.getStateFromMeta(meta));
@@ -75,6 +77,7 @@ public class GridBlock
 		return plants != null && plants.size() > 0;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public IBlockState getState()
 	{
 		if(block == null)
@@ -210,6 +213,7 @@ public class GridBlock
 			this.meta = meta;
 		}
 		
+		@SuppressWarnings("deprecation")
 		public IBlockState getState()
 		{
 			if(block == null)

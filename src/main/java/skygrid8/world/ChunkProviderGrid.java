@@ -1,4 +1,4 @@
-package skygrid8;
+package skygrid8.world;
 
 import java.util.ArrayList;
 import java.util.List;

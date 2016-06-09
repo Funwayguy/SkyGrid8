@@ -1,26 +1,22 @@
-package skygrid8;
+package skygrid8.world;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.Loader;
 import skygrid8.compat.abyssalcraft.SGACPlugin;
 import skygrid8.core.SG_Settings;
+import skygrid8.util.CustomLootTableManager;
 
 public class PostGenerator implements IWorldGenerator
 {
@@ -44,21 +40,11 @@ public class PostGenerator implements IWorldGenerator
 			if(tile == null)
 			{
 				continue;
-			} else if(tile instanceof IInventory)
+			} else if(tile instanceof TileEntityLockableLoot)
 			{
-				IInventory invo = (IInventory)tile;
-				
-				if(invo.getSizeInventory() > 0)
-				{
-					ArrayList<ResourceLocation> lootList = new ArrayList<ResourceLocation>(LootTableList.getAll());
-					ResourceLocation lootRes = lootList.get(random.nextInt(lootList.size()));
-					
-					LootTable loottable = world.getLootTableManager().getLootTableFromLocation(lootRes);
-
-		            LootContext.Builder lootcontext$builder = new LootContext.Builder((WorldServer)world);
-
-		            loottable.fillInventory(invo, random, lootcontext$builder.build());
-				}
+				TileEntityLockableLoot invo = (TileEntityLockableLoot)tile;
+				ResourceLocation lootRes = CustomLootTableManager.getTable(world, pos, random);
+				invo.setLootTable(lootRes, random.nextLong());
 			} else if(tile instanceof TileEntityMobSpawner)
 			{
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;

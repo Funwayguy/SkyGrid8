@@ -1,4 +1,4 @@
-package skygrid8;
+package skygrid8.util;
 
 import java.io.File;
 import java.io.FileReader;
