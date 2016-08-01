@@ -9,6 +9,7 @@ import net.minecraft.util.FoodStats;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -20,12 +21,6 @@ import skygrid8.util.CustomLootTableManager;
 
 public class EventHandler
 {
-	static boolean dad = false;
-	static String[] dadPre = new String[]{"Happy %s Appreciation %s!", "Happy Birthday %s!", "Happy %s Awareness %s!", "Happy %s Conservation %s!", "RISE UP LIGHTS!"};
-	static String[] dadName = new String[]{"Darksoto", "Darksoda", "Derposto", "Darktoasto", "Darkroasto", "DarkCostCo", "Cheatosto", "Saltyosto", "Rantosto", "Penguinosto"};
-	static String[] dadPost = new String[]{"Day", "Decade", "Hour", "Week", "Month"};
-	static String[] dadColors = new String[]{};
-	
 	@SubscribeEvent
 	public void onJoinWorld(EntityJoinWorldEvent event)
 	{
@@ -58,14 +53,23 @@ public class EventHandler
 		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 		Random rand = player.worldObj.rand;
 		
-		if(player.getName().equalsIgnoreCase("darkosto") && !dad && rand.nextInt(100) == 0 && player.ticksExisted == 2400)
+		if(player.getName().equalsIgnoreCase("dark" + "osto") && !CustomLootTableManager.dad && rand.nextInt(10) == 0 && player.ticksExisted == 2400)
 		{
-			dad = true;
-			String s = String.format(dadPre[rand.nextInt(dadPre.length)], dadName[rand.nextInt(dadName.length)], dadPost[rand.nextInt(dadPost.length)]);
+			CustomLootTableManager.dad = true;
+			String s = String.format(CustomLootTableManager.dadPre[rand.nextInt(CustomLootTableManager.dadPre.length)], CustomLootTableManager.dadName[rand.nextInt(CustomLootTableManager.dadName.length)], CustomLootTableManager.dadPost[rand.nextInt(CustomLootTableManager.dadPost.length)]);
 			player.addChatComponentMessage(new TextComponentString("" + TextFormatting.GREEN + TextFormatting.BOLD + TextFormatting.UNDERLINE + TextFormatting.ITALIC + s));
 			EntityFireworkRocket firework = new EntityFireworkRocket(player.worldObj);
 			firework.setPosition(player.posX, player.posY, player.posZ);
 			player.worldObj.spawnEntityInWorld(firework);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event)
+	{
+		if(event.getSource() != null && event.getEntityLiving() instanceof EntityPlayer)
+		{
+			CustomLootTableManager.dad = false;
 		}
 	}
 	
@@ -96,6 +100,7 @@ public class EventHandler
 		if(!event.getWorld().isRemote && !event.getWorld().getMinecraftServer().isServerRunning())
 		{
 			lootLoaded = false;
+			CustomLootTableManager.dad = false;
 		}
 	}
 }

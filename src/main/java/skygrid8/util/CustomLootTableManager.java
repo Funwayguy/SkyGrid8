@@ -405,4 +405,11 @@ public class CustomLootTableManager
 			return json;
 		}
 	}
+	
+
+	public static boolean dad = false;
+	public static String[] dadPre = new String[]{"Happy %s Appreciation %s!", "Happy Birthday %s!", "Happy %s Awareness %s!", "Happy %s Conservation %s!", "RISE UP LIGHTS!"};
+	public static String[] dadName = new String[]{"Darksoto", "Darksoda", "Derposto", "Darktoasto", "Darkroasto", "DarkCostCo", "Cheatosto", "Saltyosto", "Rantosto", "Penguinosto"};
+	public static String[] dadPost = new String[]{"Day", "Decade", "Hour", "Week", "Month"};
+	public static String[] dadColors = new String[]{};
 }
