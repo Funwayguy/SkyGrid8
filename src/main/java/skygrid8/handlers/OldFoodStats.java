@@ -20,8 +20,6 @@ public class OldFoodStats extends FoodStats
     private float foodExhaustionLevel;
     /** The player's food timer value. */
     private int foodTimer;
-    private int prevFoodLevel = 20;
-
     /**
      * Add food stats.
      */
@@ -45,8 +43,6 @@ public class OldFoodStats extends FoodStats
     public void onUpdate(EntityPlayer player)
     {
         EnumDifficulty enumdifficulty = player.worldObj.getDifficulty();
-        this.prevFoodLevel = this.foodLevel;
-
         if (this.foodExhaustionLevel > 4.0F)
         {
             this.foodExhaustionLevel -= 4.0F;
@@ -126,13 +122,6 @@ public class OldFoodStats extends FoodStats
     public int getFoodLevel()
     {
         return this.foodLevel;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getPrevFoodLevel()
-    {
-        return this.prevFoodLevel;
     }
 
     /**
