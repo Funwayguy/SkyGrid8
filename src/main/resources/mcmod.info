@@ -2,13 +2,13 @@
 {
   "modid": "skygrid8",
   "name": "Sky Grid 8",
-  "description": "A sky grid mod specifically for Minecraft 1.8.x & 1.9.x",
+  "description": "A sky grid mod specifically for Minecraft 1.8.x, 1.9.x & 1.10.x",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
   "authorList": ["Funwayguy","Darkosto"],
-  "credits": "",
+  "credits": "shinoow (AbyssalCraft compatibility)",
   "logoFile": "title.png",
   "screenshots": [],
   "dependencies": []

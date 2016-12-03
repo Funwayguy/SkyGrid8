@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import skygrid8.config.GridRegistry;
 import skygrid8.world.ChunkProviderGrid;
 
-import com.shinoow.abyssalcraft.AbyssalCraft;
 import com.shinoow.abyssalcraft.api.biome.ACBiomes;
 import com.shinoow.abyssalcraft.lib.ACLib;
 
@@ -78,7 +77,7 @@ public class WorldProviderAbyssalWastelandGrid extends WorldProvider {
 
 	@Override
 	public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
-		return new Vec3d(0, 180, 50);
+		return new Vec3d(0, 5, 0.2);
 	}
 
 	@Override
@@ -100,6 +99,6 @@ public class WorldProviderAbyssalWastelandGrid extends WorldProvider {
 	@Override
 	public DimensionType getDimensionType() {
 
-		return AbyssalCraft.THE_ABYSSAL_WASTELAND;
+		return ACLib.THE_ABYSSAL_WASTELAND;
 	}
 }
