@@ -1,8 +1,8 @@
 [
 {
-  "modid": "skygrid8",
-  "name": "Sky Grid 8",
-  "description": "A sky grid mod specifically for Minecraft 1.8.x, 1.9.x & 1.10.x",
+  "modid": "skygrid",
+  "name": "Sky Grid",
+  "description": "A highly configurable sky grid mod for modded Minecraft",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

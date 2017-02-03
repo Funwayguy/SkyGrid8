@@ -1,4 +1,4 @@
-Sky Grid 8
+Sky Grid
 ============
 
-A sky grid mod specifically for Minecraft 1.8.x & 1.9.x
+A highly configurable sky grid mod for modded Minecraft

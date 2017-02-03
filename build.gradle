@@ -13,13 +13,16 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "SG_VER_KEY"
-group= "skygrid8" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "SkyGrid8"
+version = "CI_MOD_VERSION"
+group= "funwayguy.skygrid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "SkyGrid"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 minecraft {
-    version = "1.10.2-12.18.2.2122"
-    mappings = "snapshot_20160518"
+    version = "1.10.2-12.18.3.2185"
+    mappings = "snapshot_20161111"
 }
 
 dependencies {
