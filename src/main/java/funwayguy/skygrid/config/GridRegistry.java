@@ -88,7 +88,9 @@ public class GridRegistry
 	
 	public static void loadBlocks()
 	{
-		File f = new File("config/skygrid8_overworld.json");
+		final String preFix = "config/skygrid/";
+		
+		File f = new File(preFix + "overworld.json");
 		blocksOverworld = new ArrayList<GridBlock>();
 		
 		if(!f.exists())
@@ -109,7 +111,7 @@ public class GridRegistry
 		}
 		SkyGrid.logger.log(Level.INFO, "Loaded " + blocksOverworld.size() + " Overworld grid blocks");
 		
-		f = new File("config/skygrid8_nether.json");
+		f = new File(preFix + "nether.json");
 		blocksNether = new ArrayList<GridBlock>();
 		
 		if(!f.exists())
@@ -131,7 +133,7 @@ public class GridRegistry
 		
 		SkyGrid.logger.log(Level.INFO, "Loaded " + blocksNether.size() + " Nether grid blocks");
 		
-		f = new File("config/skygrid8_end.json");
+		f = new File(preFix + "end.json");
 		blocksEnd = new ArrayList<GridBlock>();
 		
 		if(!f.exists())
@@ -154,7 +156,7 @@ public class GridRegistry
 		SkyGrid.logger.log(Level.INFO, "Loaded " + blocksEnd.size() + " End grid blocks");
 
 		if(Loader.isModLoaded("abyssalcraft")){
-			f = new File("config/skygrid8_abyssal_wasteland.json");
+			f = new File(preFix + "abyssal_wasteland.json");
 			blocksAbyssalWasteland = new ArrayList<GridBlock>();
 			
 			if(!f.exists())
@@ -176,7 +178,7 @@ public class GridRegistry
 			
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksAbyssalWasteland.size() + " Abyssal Wasteland grid blocks");
 			
-			f = new File("config/skygrid8_dreadlands.json");
+			f = new File(preFix + "dreadlands.json");
 			blocksDreadlands = new ArrayList<GridBlock>();
 			
 			if(!f.exists())
@@ -198,7 +200,7 @@ public class GridRegistry
 			
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksDreadlands.size() + " Dreadlands grid blocks");
 			
-			f = new File("config/skygrid8_omothol.json");
+			f = new File(preFix + "omothol.json");
 			blocksOmothol = new ArrayList<GridBlock>();
 			
 			if(!f.exists())
@@ -220,7 +222,7 @@ public class GridRegistry
 			
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksOmothol.size() + " Omothol grid blocks");
 			
-			f = new File("config/skygrid8_dark_realm.json");
+			f = new File(preFix + "dark_realm.json");
 			blocksDarkRealm = new ArrayList<GridBlock>();
 			
 			if(!f.exists())
@@ -246,6 +248,8 @@ public class GridRegistry
 	
 	public static void saveBlocks()
 	{
+		final String preFix = "config/skygrid/";
+		
 		JsonArray oList = new JsonArray();
 		for(GridBlock g : blocksOverworld)
 		{
@@ -253,7 +257,7 @@ public class GridRegistry
 			g.writeToJson(j);
 			oList.add(j);
 		}
-		JsonHelper.WriteToFile(new File("config/skygrid8_overworld.json"), oList);
+		JsonHelper.WriteToFile(new File(preFix + "overworld.json"), oList);
 		
 		JsonArray nList = new JsonArray();
 		for(GridBlock g : blocksNether)
@@ -262,7 +266,7 @@ public class GridRegistry
 			g.writeToJson(j);
 			nList.add(j);
 		}
-		JsonHelper.WriteToFile(new File("config/skygrid8_nether.json"), nList);
+		JsonHelper.WriteToFile(new File(preFix + "nether.json"), nList);
 		
 		JsonArray eList = new JsonArray();
 		for(GridBlock g : blocksEnd)
@@ -271,7 +275,7 @@ public class GridRegistry
 			g.writeToJson(j);
 			eList.add(j);
 		}
-		JsonHelper.WriteToFile(new File("config/skygrid8_end.json"), eList);
+		JsonHelper.WriteToFile(new File(preFix + "end.json"), eList);
 
 		if(Loader.isModLoaded("abyssalcraft")){
 			JsonArray awList = new JsonArray();
@@ -281,7 +285,7 @@ public class GridRegistry
 				g.writeToJson(j);
 				awList.add(j);
 			}
-			JsonHelper.WriteToFile(new File("config/skygrid8_abyssal_wasteland.json"), awList);
+			JsonHelper.WriteToFile(new File(preFix + "abyssal_wasteland.json"), awList);
 
 			JsonArray dlList = new JsonArray();
 			for(GridBlock g : blocksDreadlands)
@@ -290,7 +294,7 @@ public class GridRegistry
 				g.writeToJson(j);
 				dlList.add(j);
 			}
-			JsonHelper.WriteToFile(new File("config/skygrid8_dreadlands.json"), dlList);
+			JsonHelper.WriteToFile(new File(preFix + "dreadlands.json"), dlList);
 
 			JsonArray omtList = new JsonArray();
 			for(GridBlock g : blocksOmothol)
@@ -299,7 +303,7 @@ public class GridRegistry
 				g.writeToJson(j);
 				omtList.add(j);
 			}
-			JsonHelper.WriteToFile(new File("config/skygrid8_omothol.json"), omtList);
+			JsonHelper.WriteToFile(new File(preFix + "omothol.json"), omtList);
 
 			JsonArray drList = new JsonArray();
 			for(GridBlock g : blocksDarkRealm)
@@ -308,7 +312,7 @@ public class GridRegistry
 				g.writeToJson(j);
 				drList.add(j);
 			}
-			JsonHelper.WriteToFile(new File("config/skygrid8_dark_realm.json"), drList);
+			JsonHelper.WriteToFile(new File(preFix + "dark_realm.json"), drList);
 		}
 	}
 	
