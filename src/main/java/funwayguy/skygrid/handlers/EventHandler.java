@@ -45,22 +45,22 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingUpdate(LivingUpdateEvent event)
 	{
-		if(event.getEntity().worldObj.isRemote || !(event.getEntityLiving() instanceof EntityPlayer))
+		if(event.getEntity().world.isRemote || !(event.getEntityLiving() instanceof EntityPlayer))
 		{
 			return;
 		}
 		
 		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-		Random rand = player.worldObj.rand;
+		Random rand = player.world.rand;
 		
 		if(player.getName().equalsIgnoreCase("dark" + "osto") && !CustomLootTableManager.dad && rand.nextInt(10) == 0 && player.ticksExisted == 2400)
 		{
 			CustomLootTableManager.dad = true;
 			String s = String.format(CustomLootTableManager.dadPre[rand.nextInt(CustomLootTableManager.dadPre.length)], CustomLootTableManager.dadName[rand.nextInt(CustomLootTableManager.dadName.length)], CustomLootTableManager.dadPost[rand.nextInt(CustomLootTableManager.dadPost.length)]);
-			player.addChatComponentMessage(new TextComponentString("" + TextFormatting.GREEN + TextFormatting.BOLD + TextFormatting.UNDERLINE + TextFormatting.ITALIC + s));
-			EntityFireworkRocket firework = new EntityFireworkRocket(player.worldObj);
+			player.sendMessage(new TextComponentString("" + TextFormatting.GREEN + TextFormatting.BOLD + TextFormatting.UNDERLINE + TextFormatting.ITALIC + s));
+			EntityFireworkRocket firework = new EntityFireworkRocket(player.world);
 			firework.setPosition(player.posX, player.posY, player.posZ);
-			player.worldObj.spawnEntityInWorld(firework);
+			player.world.spawnEntity(firework);
 		}
 	}
 	

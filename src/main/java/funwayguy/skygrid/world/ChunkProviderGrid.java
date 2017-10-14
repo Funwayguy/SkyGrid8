@@ -16,7 +16,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
+
+import javax.annotation.Nullable;
 
 public class ChunkProviderGrid implements IChunkGenerator
 {
@@ -32,7 +34,7 @@ public class ChunkProviderGrid implements IChunkGenerator
     }
 	
 	@Override
-	public Chunk provideChunk(int x, int z)
+	public Chunk generateChunk(int x, int z)
 	{
         Biome[] abiomegenbase = this.worldObj.getBiomeProvider().getBiomes((Biome[])null, x * 16, z * 16, 16, 16);
         ChunkPrimer chunkprimer = new ChunkPrimer();
@@ -123,15 +125,20 @@ public class ChunkProviderGrid implements IChunkGenerator
         Biome biomegenbase = this.worldObj.getBiome(pos);
         return biomegenbase.getSpawnableList(creatureType);
 	}
-	
+
+	@Nullable
 	@Override
-	public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position)
-	{
+	public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
 		return null;
 	}
 	
 	@Override
 	public void recreateStructures(Chunk p_180514_1_, int p_180514_2_, int p_180514_3_)
 	{
+	}
+
+	@Override
+	public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
+		return false;
 	}
 }

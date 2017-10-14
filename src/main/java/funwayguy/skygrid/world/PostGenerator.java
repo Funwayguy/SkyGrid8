@@ -13,8 +13,8 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.Loader;
 
@@ -48,7 +48,7 @@ public class PostGenerator implements IWorldGenerator
 			} else if(tile instanceof TileEntityMobSpawner)
 			{
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-				ArrayList<String> entities = new ArrayList<String>();
+				ArrayList<String> entities;
 				
 				switch(world.provider.getDimension())
 				{
@@ -67,7 +67,7 @@ public class PostGenerator implements IWorldGenerator
 				
 				if(entities.size() > 0)
 				{
-					spawner.getSpawnerBaseLogic().setEntityName(entities.get(random.nextInt(entities.size())));
+					spawner.getSpawnerBaseLogic().setEntityId(new ResourceLocation(entities.get(random.nextInt(entities.size()))));
 				}
 			}
 		}
@@ -78,7 +78,7 @@ public class PostGenerator implements IWorldGenerator
 		{
 			EntityDragon dragon = new EntityDragon(world);
 			dragon.setPosition(0, SG_Settings.height + 16, 0);
-			world.spawnEntityInWorld(dragon);
+			world.spawnEntity(dragon);
 		}
 	}
 	
