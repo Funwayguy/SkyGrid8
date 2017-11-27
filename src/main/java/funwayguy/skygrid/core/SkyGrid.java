@@ -25,7 +25,7 @@ import funwayguy.skygrid.world.WorldProviderOverworldGrid;
 public class SkyGrid
 {
     public static final String MODID = "skygrid";
-    public static final String VERSION = "SG_VER_KEY";
+    public static final String VERSION = "CI_MOD_VERSION";
     public static final String NAME = "Sky Grid";
     public static final String PROXY = "funwayguy.skygrid.core.proxies";
     public static final String CHANNEL = "SKY_CHAN";
