@@ -1,17 +1,16 @@
 package funwayguy.skygrid.compat.abyssalcraft;
 
-import net.minecraft.world.chunk.IChunkGenerator;
-
 import com.shinoow.abyssalcraft.common.world.WorldProviderOmothol;
 
 import funwayguy.skygrid.config.GridRegistry;
 import funwayguy.skygrid.world.ChunkProviderGrid;
+import net.minecraft.world.gen.IChunkGenerator;
 
 public class WorldProviderOmotholGrid extends WorldProviderOmothol {
 
 	@Override
 	public IChunkGenerator createChunkGenerator()
 	{
-		return new ChunkProviderGrid(worldObj, worldObj.getSeed(), GridRegistry.blocksOmothol); //normally I'd use a fixed seed here
+		return new ChunkProviderGrid(world, world.getSeed(), GridRegistry.blocksOmothol); //normally I'd use a fixed seed here
 	}
 }

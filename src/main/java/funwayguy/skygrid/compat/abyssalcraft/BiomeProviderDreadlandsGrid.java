@@ -106,7 +106,7 @@ public class BiomeProviderDreadlandsGrid extends BiomeProvider
 		int[] aint = biomeIndexLayer.getInts(par2, par3, par4, par5);
 
 		for (int i1 = 0; i1 < par4 * par5; ++i1) {
-			float f = Biome.getBiome(aint[i1]).getTemperature() / 65536.0F; //getIntTemperature()
+			float f = Biome.getBiome(aint[i1]).getDefaultTemperature() / 65536.0F; //getIntTemperature()
 
 			if (f > 1.0F)
 				f = 1.0F;

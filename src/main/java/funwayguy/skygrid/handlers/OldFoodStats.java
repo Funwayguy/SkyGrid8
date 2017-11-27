@@ -42,7 +42,7 @@ public class OldFoodStats extends FoodStats
     @Override
     public void onUpdate(EntityPlayer player)
     {
-        EnumDifficulty enumdifficulty = player.worldObj.getDifficulty();
+        EnumDifficulty enumdifficulty = player.world.getDifficulty();
         if (this.foodExhaustionLevel > 4.0F)
         {
             this.foodExhaustionLevel -= 4.0F;
@@ -57,7 +57,7 @@ public class OldFoodStats extends FoodStats
             }
         }
 
-        if(player.worldObj.getGameRules().getBoolean("naturalRegeneration") && this.foodLevel >= 18 && player.shouldHeal())
+        if(player.world.getGameRules().getBoolean("naturalRegeneration") && this.foodLevel >= 18 && player.shouldHeal())
         {
             ++this.foodTimer;
 
@@ -76,7 +76,7 @@ public class OldFoodStats extends FoodStats
             {
                 if (player.getHealth() > 10.0F || enumdifficulty == EnumDifficulty.HARD || player.getHealth() > 1.0F && enumdifficulty == EnumDifficulty.NORMAL)
                 {
-                    player.attackEntityFrom(DamageSource.starve, 1.0F);
+                    player.attackEntityFrom(DamageSource.STARVE, 1.0F);
                 }
 
                 this.foodTimer = 0;

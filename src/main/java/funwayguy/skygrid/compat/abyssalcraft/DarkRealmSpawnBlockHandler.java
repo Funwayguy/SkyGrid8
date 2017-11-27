@@ -11,10 +11,10 @@ public class DarkRealmSpawnBlockHandler {
 	@SubscribeEvent
 	public void onDimensionChange(PlayerChangedDimensionEvent event){
 		if(event.toDim == ACLib.dark_realm_id){
-			if(!event.player.worldObj.isRemote){
+			if(!event.player.world.isRemote){
 				event.player.setPositionAndUpdate(event.player.posX, SG_Settings.height - SG_Settings.dist + 1, event.player.posZ);
-				if(event.player.worldObj.isAirBlock(event.player.getPosition().down()))
-					event.player.worldObj.setBlockState(event.player.getPosition().down(), ACBlocks.darkstone.getDefaultState());
+				if(event.player.world.isAirBlock(event.player.getPosition().down()))
+					event.player.world.setBlockState(event.player.getPosition().down(), ACBlocks.stone.getDefaultState());
 			}
 		}
 	}

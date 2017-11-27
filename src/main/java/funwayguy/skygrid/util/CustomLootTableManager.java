@@ -88,7 +88,7 @@ public class CustomLootTableManager
 			try
 			{
 				ResourceLocation tableID = new ResourceLocation(tbl.name);
-				LootTable vanTable = ForgeHooks.loadLootTable(GSON, tableID, fmt, true);
+				LootTable vanTable = ForgeHooks.loadLootTable(GSON, tableID, fmt, true, manager);
 				LoadingCache<ResourceLocation, LootTable> registeredLootTables = ObfuscationReflectionHelper.getPrivateValue(LootTableManager.class, manager, "field_186527_c", "registeredLootTables");
 				registeredLootTables.put(tableID, vanTable); // FORCE IT IN!
 			} catch(Exception ex)

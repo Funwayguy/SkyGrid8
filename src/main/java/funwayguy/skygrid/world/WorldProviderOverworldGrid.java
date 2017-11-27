@@ -5,7 +5,7 @@ import funwayguy.skygrid.core.SG_Settings;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
 
 public class WorldProviderOverworldGrid extends WorldProvider
 {
@@ -15,7 +15,7 @@ public class WorldProviderOverworldGrid extends WorldProvider
 	@Override
     public IChunkGenerator createChunkGenerator()
     {
-    	return new ChunkProviderGrid(this.worldObj, this.getSeed(), GridRegistry.blocksOverworld);
+    	return new ChunkProviderGrid(this.world, this.getSeed(), GridRegistry.blocksOverworld);
     }
     
     /**
@@ -58,6 +58,6 @@ public class WorldProviderOverworldGrid extends WorldProvider
 	@Override
     public boolean canDropChunk(int x, int z)
     {
-        return !this.worldObj.isSpawnChunk(x, z) || !this.worldObj.provider.getDimensionType().shouldLoadSpawn();
+        return !this.world.isSpawnChunk(x, z) || !this.world.provider.getDimensionType().shouldLoadSpawn();
     }
 }
