@@ -10,6 +10,8 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class OldFoodStats extends FoodStats
 {
     /** The player's food level. */
@@ -31,7 +33,7 @@ public class OldFoodStats extends FoodStats
     }
     
     @Override
-    public void addStats(ItemFood foodItem, ItemStack stack)
+    public void addStats(ItemFood foodItem, @Nonnull ItemStack stack)
     {
         this.addStats(foodItem.getHealAmount(stack), foodItem.getSaturationModifier(stack));
     }

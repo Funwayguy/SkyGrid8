@@ -1,8 +1,5 @@
 package funwayguy.skygrid.world;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import funwayguy.skygrid.config.GridBlock;
 import funwayguy.skygrid.config.GridRegistry;
 import funwayguy.skygrid.core.SG_Settings;
@@ -19,14 +16,16 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.IChunkGenerator;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
 
 public class ChunkProviderGrid implements IChunkGenerator
 {
     private World worldObj;
     private Random random;
-    private final ArrayList<GridBlock> gridBlocks;
+    private final List<GridBlock> gridBlocks;
     
-    public ChunkProviderGrid(World world, long seed, ArrayList<GridBlock> blocks)
+    public ChunkProviderGrid(World world, long seed, List<GridBlock> blocks)
     {
     	worldObj = world;
     	random = new Random(seed);
@@ -36,7 +35,7 @@ public class ChunkProviderGrid implements IChunkGenerator
 	@Override
 	public Chunk generateChunk(int x, int z)
 	{
-        Biome[] abiomegenbase = this.worldObj.getBiomeProvider().getBiomes((Biome[])null, x * 16, z * 16, 16, 16);
+        Biome[] abiomegenbase = this.worldObj.getBiomeProvider().getBiomes(null, x * 16, z * 16, 16, 16);
         ChunkPrimer chunkprimer = new ChunkPrimer();
         
         int spaceX = random.nextInt(Math.max(1, SG_Settings.dist + 1));

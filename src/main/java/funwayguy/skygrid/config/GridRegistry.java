@@ -1,43 +1,40 @@
 package funwayguy.skygrid.config;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Random;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockCactus;
-import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockNetherWart;
-import net.minecraft.block.BlockReed;
-import net.minecraft.block.BlockStem;
-import net.minecraft.init.Blocks;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.fml.common.Loader;
-import org.apache.logging.log4j.Level;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import funwayguy.skygrid.core.SkyGrid;
 import funwayguy.skygrid.util.JsonHelper;
+import net.minecraft.block.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fml.common.Loader;
+import org.apache.logging.log4j.Level;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class GridRegistry
 {
-	public static ArrayList<GridBlock> blocksOverworld = new ArrayList<GridBlock>();
-	public static ArrayList<GridBlock> blocksNether = new ArrayList<GridBlock>();
-	public static ArrayList<GridBlock> blocksEnd = new ArrayList<GridBlock>();
-	public static ArrayList<GridBlock> blocksAbyssalWasteland = new ArrayList<GridBlock>();
-	public static ArrayList<GridBlock> blocksDreadlands = new ArrayList<GridBlock>();
-	public static ArrayList<GridBlock> blocksOmothol = new ArrayList<GridBlock>();
-	public static ArrayList<GridBlock> blocksDarkRealm = new ArrayList<GridBlock>();
+	public static List<GridBlock> blocksOverworld = new ArrayList<>();
+	public static List<GridBlock> blocksNether = new ArrayList<>();
+	public static List<GridBlock> blocksEnd = new ArrayList<>();
+	public static List<GridBlock> blocksAbyssalWasteland = new ArrayList<>();
+	public static List<GridBlock> blocksDreadlands = new ArrayList<>();
+	public static List<GridBlock> blocksOmothol = new ArrayList<>();
+	public static List<GridBlock> blocksDarkRealm = new ArrayList<>();
 
-	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list, Biome biome)
+	public static GridBlock getRandom(Random rand, List<GridBlock> list, Biome biome)
 	{
-		ArrayList<GridBlock> tmp = list;
+		List<GridBlock> tmp = list;
 		
 		if(biome != null)
 		{
-			tmp = new ArrayList<GridBlock>();
+			tmp = new ArrayList<>();
 			
 			for(GridBlock gb : list)
 			{
@@ -56,7 +53,7 @@ public class GridRegistry
 		return getRandom(rand, tmp);
 	}
 	
-	public static GridBlock getRandom(Random rand, ArrayList<GridBlock> list)
+	public static GridBlock getRandom(Random rand, List<GridBlock> list)
 	{
 		int total = getTotalWeight(list);
 		float r = rand.nextFloat() * total;
@@ -74,7 +71,7 @@ public class GridRegistry
 		return new GridBlock(Blocks.BEDROCK);
 	}
 	
-	public static int getTotalWeight(ArrayList<GridBlock> list)
+	public static int getTotalWeight(List<GridBlock> list)
 	{
 		int t = 0;
 		
@@ -91,7 +88,7 @@ public class GridRegistry
 		final String preFix = "config/skygrid/";
 		
 		File f = new File(preFix + "overworld.json");
-		blocksOverworld = new ArrayList<GridBlock>();
+		blocksOverworld = new ArrayList<>();
 		
 		if(!f.exists())
 		{
@@ -112,7 +109,7 @@ public class GridRegistry
 		SkyGrid.logger.log(Level.INFO, "Loaded " + blocksOverworld.size() + " Overworld grid blocks");
 		
 		f = new File(preFix + "nether.json");
-		blocksNether = new ArrayList<GridBlock>();
+		blocksNether = new ArrayList<>();
 		
 		if(!f.exists())
 		{
@@ -134,7 +131,7 @@ public class GridRegistry
 		SkyGrid.logger.log(Level.INFO, "Loaded " + blocksNether.size() + " Nether grid blocks");
 		
 		f = new File(preFix + "end.json");
-		blocksEnd = new ArrayList<GridBlock>();
+		blocksEnd = new ArrayList<>();
 		
 		if(!f.exists())
 		{
@@ -157,7 +154,7 @@ public class GridRegistry
 
 		if(Loader.isModLoaded("abyssalcraft")){
 			f = new File(preFix + "abyssal_wasteland.json");
-			blocksAbyssalWasteland = new ArrayList<GridBlock>();
+			blocksAbyssalWasteland = new ArrayList<>();
 			
 			if(!f.exists())
 			{
@@ -179,7 +176,7 @@ public class GridRegistry
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksAbyssalWasteland.size() + " Abyssal Wasteland grid blocks");
 			
 			f = new File(preFix + "dreadlands.json");
-			blocksDreadlands = new ArrayList<GridBlock>();
+			blocksDreadlands = new ArrayList<>();
 			
 			if(!f.exists())
 			{
@@ -201,7 +198,7 @@ public class GridRegistry
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksDreadlands.size() + " Dreadlands grid blocks");
 			
 			f = new File(preFix + "omothol.json");
-			blocksOmothol = new ArrayList<GridBlock>();
+			blocksOmothol = new ArrayList<>();
 			
 			if(!f.exists())
 			{
@@ -223,7 +220,7 @@ public class GridRegistry
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksOmothol.size() + " Omothol grid blocks");
 			
 			f = new File(preFix + "dark_realm.json");
-			blocksDarkRealm = new ArrayList<GridBlock>();
+			blocksDarkRealm = new ArrayList<>();
 			
 			if(!f.exists())
 			{
@@ -316,8 +313,20 @@ public class GridRegistry
 		}
 	}
 	
-	public static void generateDefaults(File f, ArrayList<GridBlock> blockList)
+	private static List<GridBlock> defBlockList;
+	private static JsonArray defBlockJson;
+	
+	public static void generateDefaults(File f, List<GridBlock> blocklist)
 	{
+		if(defBlockList != null)
+		{
+			blocklist.addAll(defBlockList);
+			JsonHelper.WriteToFile(f, defBlockJson);
+			return;
+		}
+		
+		defBlockList = new ArrayList<>();
+		
 		GridBlock farmland = new GridBlock(Blocks.FARMLAND);
 		GridBlock soulsand = new GridBlock(Blocks.SOUL_SAND);
 		GridBlock plainsand = new GridBlock(Blocks.SAND);
@@ -329,24 +338,24 @@ public class GridRegistry
 			if(b == Blocks.GRASS)
 			{
 				grass = new GridBlock(b);
-				blockList.add(grass);
+				defBlockList.add(grass);
 				continue;
 			} else if(b == Blocks.SAND)
 			{
 				plainsand = new GridBlock(b);
-				blockList.add(plainsand);
+				defBlockList.add(plainsand);
 				continue;
 			} else if(b == Blocks.SOUL_SAND)
 			{
 				soulsand = new GridBlock(b); // Written to list when plants have been added
-				blockList.add(soulsand);
+				defBlockList.add(soulsand);
 				continue;
 			} else if(b == Blocks.FARMLAND)
 			{
 				farmland = new GridBlock(b); // Written to list when plants have been added
-				blockList.add(farmland);
+				defBlockList.add(farmland);
 				continue;
-			} else if(b instanceof BlockLiquid || (!b.getDefaultState().isFullCube() && b != Blocks.CHEST))
+			} else if(b instanceof BlockLiquid || b instanceof BlockFluidBase || (!b.getDefaultState().isFullCube() && b != Blocks.CHEST))
 			{
 				continue;
 			}
@@ -355,7 +364,7 @@ public class GridRegistry
 			GridBlock tmp = new GridBlock(b);
 			tmp.writeToJson(jBlk);
 			list.add(jBlk);
-			blockList.add(tmp);
+			defBlockList.add(tmp);
 		}
 		
 		for(Block b : Block.REGISTRY)
@@ -363,15 +372,12 @@ public class GridRegistry
 			if(b instanceof BlockCrops || b instanceof BlockStem)
 			{
 				farmland.addPlant(b);
-				continue;
 			} else if(b instanceof BlockNetherWart)
 			{
 				soulsand.addPlant(b);
-				continue;
 			} else if(b instanceof BlockCactus || b instanceof BlockReed)
 			{
 				plainsand.addPlant(b);
-				continue;
 			} else if(b instanceof IPlantable)
 			{
 				grass.addPlant(b);
@@ -390,6 +396,8 @@ public class GridRegistry
 		jBlk = new JsonObject();
 		grass.writeToJson(jBlk);
 		list.add(jBlk);
+		
+		defBlockJson = list;
 		
 		JsonHelper.WriteToFile(f, list);
 	}

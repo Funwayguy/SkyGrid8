@@ -1,26 +1,28 @@
 package funwayguy.skygrid.config;
 
-import java.util.ArrayList;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import funwayguy.skygrid.util.JsonHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GridBlock
 {
 	public int weight = 10;
-	String name = "minecraft:stone";
-	int meta = 0;
+	private ResourceLocation name;
+	private int meta;
 	private IBlockState block;
 	
-	public ArrayList<GridPlant> plants = new ArrayList<GridPlant>();
-	public ArrayList<Integer> biomes = new ArrayList<Integer>();
+	public List<GridPlant> plants = new ArrayList<>();
+	public List<Integer> biomes = new ArrayList<>();
 	
 	public GridBlock(JsonObject json)
 	{
@@ -31,7 +33,7 @@ public class GridBlock
 	{
 		this.block = state;
 		this.meta = state.getBlock().getMetaFromState(state);
-		this.name = state.getBlock().getRegistryName().toString();
+		this.name = state.getBlock().getRegistryName();
 	}
 	
 	public GridBlock(Block b)
@@ -47,7 +49,7 @@ public class GridBlock
 	
 	public GridBlock(String name, int meta)
 	{
-		this.name = name;
+		this.name = new ResourceLocation(name);
 		this.meta = meta;
 	}
 	
@@ -82,9 +84,9 @@ public class GridBlock
 	{
 		if(block == null)
 		{
-			Block b = Block.getBlockFromName(name);
+			Block b = Block.REGISTRY.getObject(name);
 			
-			if(b != null)
+			if(b != Blocks.AIR)
 			{
 				block = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
 			}
@@ -95,7 +97,7 @@ public class GridBlock
 	
 	public void writeToJson(JsonObject json)
 	{
-		json.addProperty("block", name);
+		json.addProperty("block", name.toString());
 		json.addProperty("meta", meta);
 		json.addProperty("weight", weight);
 		
@@ -103,7 +105,7 @@ public class GridBlock
 		for(GridPlant plant : plants)
 		{
 			JsonObject tmp = new JsonObject();
-			tmp.addProperty("block", plant.name);
+			tmp.addProperty("block", plant.name.toString());
 			tmp.addProperty("meta", plant.meta);
 			pList.add(tmp);
 		}
@@ -125,11 +127,11 @@ public class GridBlock
 	
 	public void readFromJson(JsonObject json)
 	{
-		name = JsonHelper.GetString(json, "block", "minecraft:stone");
+		name = new ResourceLocation(JsonHelper.GetString(json, "block", "minecraft:stone"));
 		meta = JsonHelper.GetNumber(json, "meta", -1).intValue();
 		weight = JsonHelper.GetNumber(json, "weight", weight).intValue();
 		
-		plants = new ArrayList<GridPlant>();
+		plants = new ArrayList<>();
 		for(JsonElement e : JsonHelper.GetArray(json, "plants"))
 		{
 			if(e == null || !e.isJsonObject())
@@ -143,7 +145,7 @@ public class GridBlock
 			plants.add(new GridPlant(pn, pm));
 		}
 		
-		biomes = new ArrayList<Integer>();
+		biomes = new ArrayList<>();
 		for(JsonElement e : JsonHelper.GetArray(json, "biomes"))
 		{
 			if(e == null || !e.isJsonPrimitive())
@@ -165,68 +167,40 @@ public class GridBlock
 		}
 	}
 	
-	public static GridBlock parseLegacy(String string)
-	{
-		String[] parts = string.split(":");
-		
-		if(parts.length < 2)
-		{
-			return null;
-		}
-		
-		ResourceLocation blockRes = new ResourceLocation(parts[0], parts[1]);
-		Block b = Block.REGISTRY.getObject(blockRes);
-		
-		if(b == null)
-		{
-			return null;
-		}
-		
-		if(parts.length > 2)
-		{
-			try
-			{
-				int meta = Integer.parseInt(parts[2]);
-				return new GridBlock(b, meta);
-			} catch(Exception e){}
-		}
-		
-		return new GridBlock(b);
-	}
-	
 	public static class GridPlant
 	{
-		String name = "minecraft:tall_grass";
-		int meta = 0;
-		IBlockState block;
+		private final ResourceLocation name;
+		private final int meta;
+		private final IBlockState block;
 		
 		public GridPlant(IBlockState block)
 		{
 			this.block = block;
 			meta = block.getBlock().getMetaFromState(block);
-			name = block.getBlock().getRegistryName().toString();
+			name = block.getBlock().getRegistryName();
 		}
 		
+		@SuppressWarnings("deprecation")
 		public GridPlant(String name, int meta)
 		{
-			this.name = name;
+			this.name = new ResourceLocation(name);
 			this.meta = meta;
+			
+            Block b = Block.REGISTRY.getObject(this.name);
+            
+            if(b != Blocks.AIR)
+            {
+                block = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
+            } else
+            {
+                block = Blocks.STONE.getDefaultState();
+            }
 		}
 		
 		@SuppressWarnings("deprecation")
 		public IBlockState getState()
 		{
-			if(block == null)
-			{
-				Block b = Block.getBlockFromName(name);
-				
-				if(b != null)
-				{
-					block = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
-				}
-			}
-			
-			return block != null? block : Blocks.STONE.getDefaultState();
+			return this.block;
 		}
 	}
 }

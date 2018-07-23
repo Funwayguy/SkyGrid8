@@ -1,7 +1,5 @@
 package funwayguy.skygrid.handlers;
 
-import java.io.File;
-import java.util.Random;
 import funwayguy.skygrid.core.SG_Settings;
 import funwayguy.skygrid.core.SkyGrid;
 import funwayguy.skygrid.util.CustomLootTableManager;
@@ -18,6 +16,9 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.io.File;
+import java.util.Random;
 
 public class EventHandler
 {

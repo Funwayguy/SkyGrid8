@@ -1,8 +1,5 @@
 package funwayguy.skygrid.world;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 import funwayguy.skygrid.compat.abyssalcraft.SGACPlugin;
 import funwayguy.skygrid.core.SG_Settings;
 import funwayguy.skygrid.util.CustomLootTableManager;
@@ -18,9 +15,14 @@ import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.Loader;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+
 public class PostGenerator implements IWorldGenerator
 {
-	public static HashMap<String,ArrayList<BlockPos>> tileLoc = new HashMap<String,ArrayList<BlockPos>>();
+	public static HashMap<String,ArrayList<BlockPos>> tileLoc = new HashMap<>();
 	
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
@@ -37,10 +39,7 @@ public class PostGenerator implements IWorldGenerator
 		{
 			TileEntity tile = world.getTileEntity(pos);
 			
-			if(tile == null)
-			{
-				continue;
-			} else if(tile instanceof TileEntityLockableLoot)
+			if(tile instanceof TileEntityLockableLoot)
 			{
 				TileEntityLockableLoot invo = (TileEntityLockableLoot)tile;
 				ResourceLocation lootRes = CustomLootTableManager.getTable(world, pos, random);
@@ -48,7 +47,7 @@ public class PostGenerator implements IWorldGenerator
 			} else if(tile instanceof TileEntityMobSpawner)
 			{
 				TileEntityMobSpawner spawner = (TileEntityMobSpawner)tile;
-				ArrayList<String> entities;
+				List<String> entities;
 				
 				switch(world.provider.getDimension())
 				{
@@ -86,7 +85,7 @@ public class PostGenerator implements IWorldGenerator
 	{
 		String key = dimension + ":" + chunkX + ":" + chunkZ;
 		ArrayList<BlockPos> list = tileLoc.get(key);
-		list = list != null? list : new ArrayList<BlockPos>();
+		list = list != null? list : new ArrayList<>();
 		
 		if(!list.contains(pos))
 		{

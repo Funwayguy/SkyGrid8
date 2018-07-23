@@ -1,19 +1,11 @@
 package funwayguy.skygrid.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import org.apache.logging.log4j.Level;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import funwayguy.skygrid.core.SkyGrid;
+import org.apache.logging.log4j.Level;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Used to read JSON data with pre-made checks for null entries and casting.</br>
@@ -21,6 +13,8 @@ import funwayguy.skygrid.core.SkyGrid;
  */
 public class JsonHelper
 {
+	private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	
 	public static JsonArray GetArray(JsonObject json, String id)
 	{
 		if(json == null)
@@ -121,17 +115,14 @@ public class JsonHelper
 	
 	public static JsonObject ReadObjectFromFile(File file)
 	{
-		if(!file.exists())
+		if(file == null || !file.exists())
 		{
 			return new JsonObject();
 		}
 		
-		try
+		try(InputStreamReader fr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))
 		{
-			InputStreamReader fr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-			JsonObject json = new Gson().fromJson(fr, JsonObject.class);
-			fr.close();
-			return json;
+			return GSON.fromJson(fr, JsonObject.class);
 		} catch(Exception e)
 		{
 			SkyGrid.logger.log(Level.ERROR, "An error occured while loading JSON from file:", e);
@@ -141,17 +132,14 @@ public class JsonHelper
 	
 	public static JsonArray ReadArrayFromFile(File file)
 	{
-		if(!file.exists())
+		if(file == null || !file.exists())
 		{
 			return new JsonArray();
 		}
 		
-		try
+		try(InputStreamReader fr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))
 		{
-			InputStreamReader fr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-			JsonArray json = new Gson().fromJson(fr, JsonArray.class);
-			fr.close();
-			return json;
+			return GSON.fromJson(fr, JsonArray.class);
 		} catch(Exception e)
 		{
 			SkyGrid.logger.log(Level.ERROR, "An error occured while loading JSON from file:", e);
@@ -169,16 +157,25 @@ public class JsonHelper
 				{
 					file.getParentFile().mkdirs();
 				}
-				file.createNewFile();
+				
+				if(!file.createNewFile())
+				{
+					throw new FileNotFoundException("Unable to create file " + file.getAbsolutePath());
+				}
 			}
-			
-			OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-			new GsonBuilder().setPrettyPrinting().create().toJson(json, fw);
-			fw.close();
 		} catch(Exception e)
 		{
 			SkyGrid.logger.log(Level.ERROR, "An error occured while saving JSON to file:", e);
 			return;
+		}
+		
+		try(OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))
+		{
+			GSON.toJson(json, fw);
+			fw.flush();
+		} catch(Exception e)
+		{
+			SkyGrid.logger.log(Level.ERROR, "An error occured while saving JSON to file:", e);
 		}
 	}
 }

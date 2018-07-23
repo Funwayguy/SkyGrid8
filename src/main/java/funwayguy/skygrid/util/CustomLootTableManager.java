@@ -1,20 +1,14 @@
 package funwayguy.skygrid.util;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Random;
+import com.google.common.cache.LoadingCache;
+import com.google.gson.*;
+import funwayguy.skygrid.core.SkyGrid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.LootTableManager;
-import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
@@ -22,21 +16,18 @@ import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.Level;
-import com.google.common.cache.LoadingCache;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import funwayguy.skygrid.core.SkyGrid;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class CustomLootTableManager
 {
-	static ArrayList<LootMapping> LOOT_MAP = new ArrayList<LootMapping>();
+	private static List<LootMapping> LOOT_MAP = new ArrayList<>();
 	
 	// Vanilla compatible GSON parser
-    static final Gson GSON = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(LootEntry.class, new LootEntry.Serializer()).registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
+    private static final Gson GSON = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(LootEntry.class, new LootEntry.Serializer()).registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
     
 	public static void LoadLoot(File file, LootTableManager manager)
 	{
@@ -148,7 +139,7 @@ public class CustomLootTableManager
 		IBlockState state = world.getBlockState(pos);
 		ResourceLocation blockReg = state.getBlock().getRegistryName();
 		
-		ArrayList<ResourceLocation> list = new ArrayList<ResourceLocation>();
+		List<ResourceLocation> list = new ArrayList<>();
 		
 		for(LootMapping entry : LOOT_MAP)
 		{
@@ -169,10 +160,10 @@ public class CustomLootTableManager
 	
 	public static class LootMapping
 	{
-		ArrayList<Integer> dimensions = new ArrayList<Integer>();
-		ArrayList<ResourceLocation> biomes = new ArrayList<ResourceLocation>();
-		ArrayList<ResourceLocation> blocks = new ArrayList<ResourceLocation>();
-		ArrayList<ResourceLocation> tables = new ArrayList<ResourceLocation>();
+		List<Integer> dimensions = new ArrayList<>();
+		List<ResourceLocation> biomes = new ArrayList<>();
+		List<ResourceLocation> blocks = new ArrayList<>();
+		List<ResourceLocation> tables = new ArrayList<>();
 		
 		public boolean isApplicable(int dim, ResourceLocation biome, ResourceLocation block)
 		{
@@ -189,12 +180,7 @@ public class CustomLootTableManager
 					continue;
 				}
 				
-				ResourceLocation loc = new ResourceLocation(element.getAsString());
-				
-				if(loc != null)
-				{
-					biomes.add(loc);
-				}
+				biomes.add(new ResourceLocation(element.getAsString()));
 			}
 			
 			dimensions.clear();
@@ -232,12 +218,7 @@ public class CustomLootTableManager
 					continue;
 				}
 				
-				ResourceLocation loc = new ResourceLocation(element.getAsString());
-				
-				if(loc != null)
-				{
-					tables.add(loc);
-				}
+				tables.add(new ResourceLocation(element.getAsString()));
 			}
 		}
 		
@@ -411,5 +392,5 @@ public class CustomLootTableManager
 	public static String[] dadPre = new String[]{"Happy %s Appreciation %s!", "Happy Birthday %s!", "Happy %s Awareness %s!", "Happy %s Conservation %s!", "RISE UP LIGHTS!"};
 	public static String[] dadName = new String[]{"Darksoto", "Darksoda", "Derposto", "Darktoasto", "Darkroasto", "DarkCostCo", "Cheatosto", "Saltyosto", "Rantosto", "Penguinosto"};
 	public static String[] dadPost = new String[]{"Day", "Decade", "Hour", "Week", "Month"};
-	public static String[] dadColors = new String[]{};
+	//public static String[] dadColors = new String[]{};
 }
