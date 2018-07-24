@@ -14,27 +14,48 @@ import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GridRegistry
 {
-	public static List<GridBlock> blocksOverworld = new ArrayList<>();
-	public static List<GridBlock> blocksNether = new ArrayList<>();
-	public static List<GridBlock> blocksEnd = new ArrayList<>();
-	public static List<GridBlock> blocksAbyssalWasteland = new ArrayList<>();
-	public static List<GridBlock> blocksDreadlands = new ArrayList<>();
-	public static List<GridBlock> blocksOmothol = new ArrayList<>();
-	public static List<GridBlock> blocksDarkRealm = new ArrayList<>();
-
-	public static GridBlock getRandom(Random rand, List<GridBlock> list, Biome biome)
+	public static final List<GridBlock> blocksOverworld = new ArrayList<>();
+	public static final List<GridBlock> blocksNether = new ArrayList<>();
+	public static final List<GridBlock> blocksEnd = new ArrayList<>();
+	public static final List<GridBlock> blocksAbyssalWasteland = new ArrayList<>();
+	public static final List<GridBlock> blocksDreadlands = new ArrayList<>();
+	public static final List<GridBlock> blocksOmothol = new ArrayList<>();
+	public static final List<GridBlock> blocksDarkRealm = new ArrayList<>();
+	
+	public static final Map<String, GridCache> randomCache = new HashMap<>();
+	
+	public static class GridCache
 	{
+		private final List<GridBlock> list;
+		private final int weight;
+		
+		private GridCache(List<GridBlock> list, int weight)
+		{
+			this.list = list;
+			this.weight = weight;
+		}
+	}
+
+	public static List<GridBlock> getRandom(Random rand, List<GridBlock> list, Biome biome, int dimension, int amount)
+	{
+		String key = dimension + (biome == null ? "" : "," + Biome.getIdForBiome(biome));
+		GridCache cache = randomCache.get(key);
+		
+		if(cache != null)
+		{
+			return getRandom(rand, cache, amount);
+		}
+		
 		List<GridBlock> tmp = list;
 		
 		if(biome != null)
 		{
 			tmp = new ArrayList<>();
+			int biomeID = Biome.getIdForBiome(biome);
 			
 			for(GridBlock gb : list)
 			{
@@ -43,35 +64,63 @@ public class GridRegistry
 					continue;
 				}
 				
-				if(gb.biomes == null || gb.biomes.size() <= 0 || gb.biomes.contains(Biome.getIdForBiome(biome)))
+				if(gb.biomes == null || gb.biomes.size() <= 0 || gb.biomes.contains(biomeID))
 				{
 					tmp.add(gb);
 				}
 			}
 		}
 		
-		return getRandom(rand, tmp);
+		cache = new GridCache(tmp, getTotalWeight(tmp));
+		randomCache.put(key, cache);
+		
+		return getRandom(rand, cache, amount);
 	}
 	
-	public static GridBlock getRandom(Random rand, List<GridBlock> list)
+	private static GridBlock fallback = new GridBlock(Blocks.BEDROCK);
+	
+	private static List<GridBlock> getRandom(Random rand, GridCache cache, int amount)
 	{
-		int total = getTotalWeight(list);
-		float r = rand.nextFloat() * total;
-		int cnt = 0;
+		List<Float> picks = new ArrayList<>();
 		
-		for(GridBlock entry : list)
+		for(int i = 0; i < amount; i++)
 		{
-			cnt += entry.weight;
-			if(cnt >= r)
+			picks.add(rand.nextFloat() * cache.weight);
+		}
+		
+		picks.sort(Comparator.naturalOrder());
+		
+		List<GridBlock> blocks = new ArrayList<>();
+		int cnt = 0;
+		int n = 0;
+		
+		for(GridBlock entry : cache.list)
+		{
+			if(n >= amount)
 			{
-				return entry;
+				break;
+			}
+			
+			cnt += entry.weight;
+			
+			while(n < amount && cnt >= picks.get(n))
+			{
+				blocks.add(entry);
+				n++;
 			}
 		}
 		
-		return new GridBlock(Blocks.BEDROCK);
+		if(blocks.size() <= 0)
+		{
+			blocks.add(fallback);
+		}
+		
+		Collections.shuffle(blocks, rand);
+		
+		return blocks;
 	}
 	
-	public static int getTotalWeight(List<GridBlock> list)
+	private static int getTotalWeight(List<GridBlock> list)
 	{
 		int t = 0;
 		
@@ -85,10 +134,12 @@ public class GridRegistry
 	
 	public static void loadBlocks()
 	{
+		randomCache.clear();
+		
 		final String preFix = "config/skygrid/";
 		
 		File f = new File(preFix + "overworld.json");
-		blocksOverworld = new ArrayList<>();
+		blocksOverworld.clear();
 		
 		if(!f.exists())
 		{
@@ -109,7 +160,7 @@ public class GridRegistry
 		SkyGrid.logger.log(Level.INFO, "Loaded " + blocksOverworld.size() + " Overworld grid blocks");
 		
 		f = new File(preFix + "nether.json");
-		blocksNether = new ArrayList<>();
+		blocksNether.clear();
 		
 		if(!f.exists())
 		{
@@ -131,7 +182,7 @@ public class GridRegistry
 		SkyGrid.logger.log(Level.INFO, "Loaded " + blocksNether.size() + " Nether grid blocks");
 		
 		f = new File(preFix + "end.json");
-		blocksEnd = new ArrayList<>();
+		blocksEnd.clear();
 		
 		if(!f.exists())
 		{
@@ -154,7 +205,7 @@ public class GridRegistry
 
 		if(Loader.isModLoaded("abyssalcraft")){
 			f = new File(preFix + "abyssal_wasteland.json");
-			blocksAbyssalWasteland = new ArrayList<>();
+			blocksAbyssalWasteland.clear();
 			
 			if(!f.exists())
 			{
@@ -176,7 +227,7 @@ public class GridRegistry
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksAbyssalWasteland.size() + " Abyssal Wasteland grid blocks");
 			
 			f = new File(preFix + "dreadlands.json");
-			blocksDreadlands = new ArrayList<>();
+			blocksDreadlands.clear();
 			
 			if(!f.exists())
 			{
@@ -198,7 +249,7 @@ public class GridRegistry
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksDreadlands.size() + " Dreadlands grid blocks");
 			
 			f = new File(preFix + "omothol.json");
-			blocksOmothol = new ArrayList<>();
+			blocksOmothol.clear();
 			
 			if(!f.exists())
 			{
@@ -220,7 +271,7 @@ public class GridRegistry
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksOmothol.size() + " Omothol grid blocks");
 			
 			f = new File(preFix + "dark_realm.json");
-			blocksDarkRealm = new ArrayList<>();
+			blocksDarkRealm.clear();
 			
 			if(!f.exists())
 			{
@@ -240,76 +291,6 @@ public class GridRegistry
 			}
 			
 			SkyGrid.logger.log(Level.INFO, "Loaded " + blocksDarkRealm.size() + " Dark Realm grid blocks");
-		}
-	}
-	
-	public static void saveBlocks()
-	{
-		final String preFix = "config/skygrid/";
-		
-		JsonArray oList = new JsonArray();
-		for(GridBlock g : blocksOverworld)
-		{
-			JsonObject j = new JsonObject();
-			g.writeToJson(j);
-			oList.add(j);
-		}
-		JsonHelper.WriteToFile(new File(preFix + "overworld.json"), oList);
-		
-		JsonArray nList = new JsonArray();
-		for(GridBlock g : blocksNether)
-		{
-			JsonObject j = new JsonObject();
-			g.writeToJson(j);
-			nList.add(j);
-		}
-		JsonHelper.WriteToFile(new File(preFix + "nether.json"), nList);
-		
-		JsonArray eList = new JsonArray();
-		for(GridBlock g : blocksEnd)
-		{
-			JsonObject j = new JsonObject();
-			g.writeToJson(j);
-			eList.add(j);
-		}
-		JsonHelper.WriteToFile(new File(preFix + "end.json"), eList);
-
-		if(Loader.isModLoaded("abyssalcraft")){
-			JsonArray awList = new JsonArray();
-			for(GridBlock g : blocksAbyssalWasteland)
-			{
-				JsonObject j = new JsonObject();
-				g.writeToJson(j);
-				awList.add(j);
-			}
-			JsonHelper.WriteToFile(new File(preFix + "abyssal_wasteland.json"), awList);
-
-			JsonArray dlList = new JsonArray();
-			for(GridBlock g : blocksDreadlands)
-			{
-				JsonObject j = new JsonObject();
-				g.writeToJson(j);
-				dlList.add(j);
-			}
-			JsonHelper.WriteToFile(new File(preFix + "dreadlands.json"), dlList);
-
-			JsonArray omtList = new JsonArray();
-			for(GridBlock g : blocksOmothol)
-			{
-				JsonObject j = new JsonObject();
-				g.writeToJson(j);
-				omtList.add(j);
-			}
-			JsonHelper.WriteToFile(new File(preFix + "omothol.json"), omtList);
-
-			JsonArray drList = new JsonArray();
-			for(GridBlock g : blocksDarkRealm)
-			{
-				JsonObject j = new JsonObject();
-				g.writeToJson(j);
-				drList.add(j);
-			}
-			JsonHelper.WriteToFile(new File(preFix + "dark_realm.json"), drList);
 		}
 	}
 	
@@ -335,70 +316,47 @@ public class GridRegistry
 		JsonArray list = new JsonArray();
 		for(Block b : Block.REGISTRY)
 		{
-			if(b == Blocks.GRASS)
+			if(b == Blocks.GRASS || b == Blocks.SAND || b == Blocks.SOUL_SAND || b == Blocks.FARMLAND)
 			{
-				grass = new GridBlock(b);
-				defBlockList.add(grass);
-				continue;
-			} else if(b == Blocks.SAND)
-			{
-				plainsand = new GridBlock(b);
-				defBlockList.add(plainsand);
-				continue;
-			} else if(b == Blocks.SOUL_SAND)
-			{
-				soulsand = new GridBlock(b); // Written to list when plants have been added
-				defBlockList.add(soulsand);
-				continue;
-			} else if(b == Blocks.FARMLAND)
-			{
-				farmland = new GridBlock(b); // Written to list when plants have been added
-				defBlockList.add(farmland);
-				continue;
-			} else if(b instanceof BlockLiquid || b instanceof BlockFluidBase || (!b.getDefaultState().isFullCube() && b != Blocks.CHEST))
+				continue; // Wait till all the plants are added before saving
+			} else if(b instanceof BlockLiquid || b instanceof BlockFluidBase || b instanceof BlockIce || (!b.getDefaultState().isFullCube() && b != Blocks.CHEST))
 			{
 				continue;
-			}
-
-			JsonObject jBlk = new JsonObject();
-			GridBlock tmp = new GridBlock(b);
-			tmp.writeToJson(jBlk);
-			list.add(jBlk);
-			defBlockList.add(tmp);
-		}
-		
-		for(Block b : Block.REGISTRY)
-		{
-			if(b instanceof BlockCrops || b instanceof BlockStem)
+			} else if(b instanceof BlockCrops || b instanceof BlockStem)
 			{
 				farmland.addPlant(b);
+				continue;
 			} else if(b instanceof BlockNetherWart)
 			{
 				soulsand.addPlant(b);
+				continue;
 			} else if(b instanceof BlockCactus || b instanceof BlockReed)
 			{
 				plainsand.addPlant(b);
+				continue;
 			} else if(b instanceof IPlantable)
 			{
 				grass.addPlant(b);
+				continue;
 			}
+			
+			GridBlock tmp = new GridBlock(b);
+			list.add(tmp.writeToJson(new JsonObject()));
+			defBlockList.add(tmp);
 		}
 		
-		JsonObject jBlk = new JsonObject();
-		farmland.writeToJson(jBlk);
-		list.add(jBlk);
-		jBlk = new JsonObject();
-		soulsand.writeToJson(jBlk);
-		list.add(jBlk);
-		jBlk = new JsonObject();
-		plainsand.writeToJson(jBlk);
-		list.add(jBlk);
-		jBlk = new JsonObject();
-		grass.writeToJson(jBlk);
-		list.add(jBlk);
+		list.add(farmland.writeToJson(new JsonObject()));
+		list.add(soulsand.writeToJson(new JsonObject()));
+		list.add(plainsand.writeToJson(new JsonObject()));
+		list.add(grass.writeToJson(new JsonObject()));
+		defBlockList.add(farmland);
+		defBlockList.add(soulsand);
+		defBlockList.add(plainsand);
+		defBlockList.add(grass);
 		
 		defBlockJson = list;
+		blocklist.addAll(defBlockList);
 		
-		JsonHelper.WriteToFile(f, list);
+		JsonHelper.WriteToFile(f, defBlockJson);
 	}
 }

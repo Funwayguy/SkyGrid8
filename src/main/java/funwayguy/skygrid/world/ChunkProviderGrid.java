@@ -3,6 +3,7 @@ package funwayguy.skygrid.world;
 import funwayguy.skygrid.config.GridBlock;
 import funwayguy.skygrid.config.GridRegistry;
 import funwayguy.skygrid.core.SG_Settings;
+import funwayguy.skygrid.handlers.EventHandler;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
@@ -16,8 +17,7 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.IChunkGenerator;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ChunkProviderGrid implements IChunkGenerator
 {
@@ -47,37 +47,41 @@ public class ChunkProviderGrid implements IChunkGenerator
         	spaceX = spaceY = spaceZ = SG_Settings.dist;
         }
         
+        boolean[] validSpawns = new boolean[16 * 16];
+        
+        int amount = (256 / spaceY) * (16 / spaceX) * (16 / spaceZ);
+        List<GridBlock> randomBlocks = GridRegistry.getRandom(random, gridBlocks, abiomegenbase[0], worldObj.provider.getDimension(), amount);
+        int n = 0;
+        
         for (int i = 0; i < 256 && i < SG_Settings.height; i += spaceY)
         {
-            for (int j = 0; j < 16; ++j)
+            for (int j = (x*16)%spaceX; j < 16; j += spaceX)
             {
-                for (int k = 0; k < 16; ++k)
+                for (int k = (z*16)%spaceZ; k < 16; k += spaceZ)
                 {
-                	Biome biome = abiomegenbase[k << 4 | j];
-                	GridBlock gb = gridBlocks.size() <= 0? new GridBlock(Blocks.BEDROCK) : GridRegistry.getRandom(random, gridBlocks, biome);
-                    
-                	if((x*16 + j)%spaceX != 0 || (z*16 + k)%spaceZ != 0 || gb == null)
-                	{
-                		chunkprimer.setBlockState(j, i, k, Blocks.AIR.getDefaultState());
-                	} else
-                	{
-                		chunkprimer.setBlockState(j, i, k, gb.getState());
-                		
-                		IBlockState plant = gb.plants.size() <= 0? null : gb.plants.get(random.nextInt(gb.plants.size())).getState();
-                		
-                		if(i < 255 && plant != null)
-                		{
-                			chunkprimer.setBlockState(j, i + 1, k, plant);
-                		}
-                    	
-                    	if(gb.getState().getBlock() instanceof ITileEntityProvider)
-                    	{
-                    		PostGenerator.addLocation(worldObj.provider.getDimension(), x, z, new BlockPos(x*16 + j, i, z*16 + k));
-                    	}
-                	}
+                	validSpawns[k * 16 + j] = true;
+					
+                	GridBlock gb = randomBlocks.get(n);
+                	n++;
+                	
+					chunkprimer.setBlockState(j, i, k, gb.getState());
+					
+					IBlockState plant = gb.plants.size() <= 0? null : gb.plants.get(random.nextInt(gb.plants.size())).getState();
+					
+					if(i < 255 && plant != null)
+					{
+						chunkprimer.setBlockState(j, i + 1, k, plant);
+					}
+					
+					if(gb.getState().getBlock() instanceof ITileEntityProvider)
+					{
+						PostGenerator.addLocation(worldObj.provider.getDimension(), x, z, new BlockPos(x*16 + j, i, z*16 + k));
+					}
                 }
             }
         }
+		
+		EventHandler.spawnCache.put(x + "," + z + "," + worldObj.provider.getDimension(), validSpawns);
         
         if(x == 0 && z == 0)
         {
@@ -118,11 +122,22 @@ public class ChunkProviderGrid implements IChunkGenerator
 		return false;
 	}
 	
+	private Map<String, List<SpawnListEntry>> cachedSpawns = new HashMap<>();
+	
 	@Override
 	public List<SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos)
 	{
         Biome biomegenbase = this.worldObj.getBiome(pos);
-        return biomegenbase.getSpawnableList(creatureType);
+        String key = biomegenbase.getRegistryName().toString() + ":" + creatureType.toString();
+        List<SpawnListEntry> list = cachedSpawns.get(key);
+        
+        if(list == null)
+		{
+			list = biomegenbase.getSpawnableList(creatureType);
+			cachedSpawns.put(key, list);
+		}
+		
+        return list;
 	}
 
 	@Nullable

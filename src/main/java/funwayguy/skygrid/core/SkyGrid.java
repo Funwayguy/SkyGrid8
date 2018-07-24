@@ -1,5 +1,6 @@
 package funwayguy.skygrid.core;
 
+import funwayguy.skygrid.config.GridRegistry;
 import funwayguy.skygrid.core.proxies.CommonProxy;
 import funwayguy.skygrid.handlers.ConfigHandler;
 import funwayguy.skygrid.world.PostGenerator;
@@ -74,6 +75,8 @@ public class SkyGrid
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+    	GridRegistry.loadBlocks();
+		//GridRegistry.saveBlocks();
     }
     
     private static boolean inUse = false;

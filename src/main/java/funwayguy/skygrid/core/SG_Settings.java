@@ -13,6 +13,7 @@ public class SG_Settings
 	public static int height = 128;
 	public static int dist = 4;
 	public static boolean oldRegen = true;
+	public static boolean spawnFix = true;
 	public static List<String> spawnO = new ArrayList<>();
 	public static List<String> spawnN = new ArrayList<>();
 	public static List<String> spawnE = new ArrayList<>();

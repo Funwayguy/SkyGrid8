@@ -63,15 +63,7 @@ task deobfJar(type: Jar) {
         from sourceSets.main.output
         appendix = 'deobf'
 }
-
-task apiJar(type: Jar) {
-        from(sourceSets.main.output) {
-            include 'funwayguy/epicsiegemod/api/**'
-        }
-        appendix = 'api'
-}
  
 artifacts {
         archives deobfJar
-        archives apiJar
 }

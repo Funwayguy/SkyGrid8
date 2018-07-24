@@ -31,7 +31,7 @@ public class GridBlock
 	
 	public GridBlock(IBlockState state)
 	{
-		this.block = state;
+		this.block = state != null ? state : Blocks.AIR.getDefaultState();
 		this.meta = state.getBlock().getMetaFromState(state);
 		this.name = state.getBlock().getRegistryName();
 	}
@@ -82,20 +82,25 @@ public class GridBlock
 	@SuppressWarnings("deprecation")
 	public IBlockState getState()
 	{
-		if(block == null)
+		if(this.block != null)
 		{
-			Block b = Block.REGISTRY.getObject(name);
-			
-			if(b != Blocks.AIR)
-			{
-				block = meta < 0? b.getDefaultState() : b.getStateFromMeta(meta);
-			}
+			return this.block;
 		}
 		
-		return block != null? block : Blocks.STONE.getDefaultState();
+		Block b = Block.REGISTRY.getObject(this.name);
+		
+		if(b != Blocks.AIR)
+		{
+			block = meta < 0 ? b.getDefaultState() : b.getStateFromMeta(meta);
+		} else
+		{
+			block = Blocks.STONE.getDefaultState();
+		}
+		
+		return block;
 	}
 	
-	public void writeToJson(JsonObject json)
+	public JsonObject writeToJson(JsonObject json)
 	{
 		json.addProperty("block", name.toString());
 		json.addProperty("meta", meta);
@@ -123,6 +128,8 @@ public class GridBlock
 			}
 		}
 		json.add("biomes", bList);
+		
+		return json;
 	}
 	
 	public void readFromJson(JsonObject json)
@@ -171,13 +178,13 @@ public class GridBlock
 	{
 		private final ResourceLocation name;
 		private final int meta;
-		private final IBlockState block;
+		private IBlockState block;
 		
-		public GridPlant(IBlockState block)
+		public GridPlant(IBlockState state)
 		{
-			this.block = block;
-			meta = block.getBlock().getMetaFromState(block);
-			name = block.getBlock().getRegistryName();
+			this.block = state != null ? state : Blocks.AIR.getDefaultState();
+			meta = state.getBlock().getMetaFromState(state);
+			name = state.getBlock().getRegistryName();
 		}
 		
 		@SuppressWarnings("deprecation")
@@ -185,6 +192,15 @@ public class GridBlock
 		{
 			this.name = new ResourceLocation(name);
 			this.meta = meta;
+		}
+		
+		@SuppressWarnings("deprecation")
+		public IBlockState getState()
+		{
+			if(this.block != null)
+			{
+				return this.block;
+			}
 			
             Block b = Block.REGISTRY.getObject(this.name);
             
@@ -195,12 +211,8 @@ public class GridBlock
             {
                 block = Blocks.STONE.getDefaultState();
             }
-		}
-		
-		@SuppressWarnings("deprecation")
-		public IBlockState getState()
-		{
-			return this.block;
+            
+            return block;
 		}
 	}
 }

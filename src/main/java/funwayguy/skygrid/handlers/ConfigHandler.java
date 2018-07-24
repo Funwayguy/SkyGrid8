@@ -31,6 +31,7 @@ public class ConfigHandler
 		SG_Settings.populate = config.getBoolean("Natural Populate", Configuration.CATEGORY_GENERAL, false, "Naturally populate the grid with trees and plants");
 		SG_Settings.rngSpacing = config.getBoolean("Random Spacing", Configuration.CATEGORY_GENERAL, false, "Randomise the spacing between 1 and the configured value (per chunk)");
 		SG_Settings.oldRegen = config.getBoolean("Old Regen", Configuration.CATEGORY_CLIENT, true, "Use the old health regen speed at full hunger (easier to navigate grids)");
+		SG_Settings.spawnFix = config.getBoolean("Mob Spawn Fix", Configuration.CATEGORY_GENERAL, true, "Pre-emptively cancels spawn attempts over the void. May prevent some flying mobs spawning");
 		SG_Settings.spawnO = new ArrayList<>();
 		SG_Settings.spawnO.addAll(Arrays.asList(config.getStringList("Spawners Overworld", Configuration.CATEGORY_GENERAL, new String[] {"minecraft:skeleton", "minecraft:zombie", "minecraft:spider", "minecraft:cave_spider"}, "Sets the possible spawner types in the grid")));
 		SG_Settings.spawnN = new ArrayList<>();
@@ -48,14 +49,12 @@ public class ConfigHandler
 			SG_Settings.spawnDR = new ArrayList<>();
 			SG_Settings.spawnDR.addAll(Arrays.asList(config.getStringList("Spawners Dark Realm", Configuration.CATEGORY_GENERAL, new String[] {"abyssalcraft:shadowcreature", "abyssalcraft:shadowmonster", "abyssalcraft:shadowbeast", "abyssalcraft:lessershoggoth"}, "Sets ths possible spawner types in the grid")));
 		}
-
-		GridRegistry.loadBlocks();
 		
 		if(config.getCategory(Configuration.CATEGORY_GENERAL).containsKey("Overworld Grid Blocks")) // Legacy config
 		{
 			String[] tmp = config.getStringList("Overworld Grid Blocks", Configuration.CATEGORY_GENERAL, new String[0], "Which blocks should be present in the grid");
 			
-			GridRegistry.blocksOverworld = new ArrayList<>();
+			GridRegistry.blocksOverworld.clear();
 			
 			for(String s : tmp)
 			{
@@ -74,7 +73,7 @@ public class ConfigHandler
 		{
 			String[] tmp = config.getStringList("Nether Grid Blocks", Configuration.CATEGORY_GENERAL, new String[0], "Which blocks should be present in the grid");
 			
-			GridRegistry.blocksNether = new ArrayList<>();
+			GridRegistry.blocksNether.clear();
 			
 			for(String s : tmp)
 			{
@@ -93,8 +92,6 @@ public class ConfigHandler
 		{
 			config.getCategory(Configuration.CATEGORY_GENERAL).remove("Crops");
 		}
-		
-		GridRegistry.saveBlocks();
 		
 		config.save();
 		
